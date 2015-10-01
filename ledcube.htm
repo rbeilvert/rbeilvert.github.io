@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
     
     <head>
@@ -6,13 +7,25 @@
     </head>
 
     <body>
-        <h1>LED Cube</h1>
-        <h2>8x8x8 interactive LED cube</h2>
-        <p>Includes UART communication with homemade Python games and control interfaces</p> 
-        <video controls height="60%" poster="img/ledcube/ledCube.jpg">
-            <source src="img/ledcube/ledCube.webm" type="video/webm" />
-            Your browser does not support the video tag.
-        </video>
+        <div class="hidden">
+            <div class="header">
+                <h1>Projects gathering blog</h1>
+            </div>        
+            <div class="leftpanel" style="float:left;">
+                <button type="button" onclick="location.href='arcade.htm'">Arcade Station</button>
+                <button type="button" onclick="location.href='ledcube.htm'">LED Cube</button> 
+                <button type="button" onclick="location.href='carnavalinp.htm'">Toulouse Carnival</button>
+            </div>
+            <div class="mainpanel">
+                <h1>LED Cube</h1>
+                <h2>8x8x8 interactive LED cube</h2>
+                <p>Includes UART communication with homemade Python games and control interfaces</p> 
+                <video controls height="60%" poster="img/ledcube/ledCube.jpg">
+                    <source src="img/ledcube/ledCube.webm" type="video/webm" />
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
     </body>
 
 </html>
