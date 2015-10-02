@@ -52,6 +52,10 @@ article {
     );
 }
 
+footer {
+    float: left
+}
+
 img {
     height: 280px
 }
