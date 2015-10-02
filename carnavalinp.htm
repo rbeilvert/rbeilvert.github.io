@@ -7,17 +7,17 @@
     </head>
 
     <body>
-        <div class="hidden">
-            <div class="header">
+        <div class="wrapper">
+            <header>
                 <h1>Projects gathering blog</h1>
-            </div>
-            <div class="leftpanel">
+            </header>
+            <aside>
                 <button type="button" onclick="location.href='arcade.htm'">Arcade Station</button>
                 <button type="button" onclick="location.href='ledcube.htm'">LED Cube</button> 
-                <button type="button" onclick="location.href='carnavalinp.htm'">Toulouse Carnival</button>
-            </div>
-            <div class="mainpanel">
-                <img class="banner" src="img/carnival/banner.png" width="50%" title="CarnavalINP"/>    
+                <button type="button" class="currentpage" onclick="location.href='carnavalinp.htm'">Toulouse Carnival</button>
+            </aside>
+            <article>
+                <h1><img class="banner" src="img/carnival/banner.png" width="50%" title="CarnavalINP"/></h1>
                 <h2>Building of the NefertitINP float for the carnival of Toulouse</h2>
     	        <img src=img/carnival/1.jpg alt="img">
     	        <img src=img/carnival/2.jpg alt="img">
@@ -68,8 +68,13 @@
     	        <img src=img/carnival/48.jpg alt="img">
     	        <img src=img/carnival/49.jpg alt="img">
     	        <img src=img/carnival/50.jpg alt="img">
-            </div>
-        </div>
+            </article>
+ 
+            <footer>
+		        <p><small>&copy; Copyright Robin Beilvert 2015. All Rights Reserved.</small></p>
+	        </footer>
+
+       </div><!--wrapper-->
     </body>
 
 </html>

@@ -7,16 +7,16 @@
     </head>
 
     <body>        
-        <div class="hidden">
-            <div class="header">
+        <div class="wrapper">
+            <header>
                 <h1>Projects gathering blog</h1>
-            </div>       
-            <div class="leftpanel">
-                <button type="button" onclick="location.href='arcade.htm'">Arcade Station</button>
+            </header>       
+            <aside>
+                <button type="button" class="currentpage" onclick="location.href='arcade.htm'">Arcade Station</button>
                 <button type="button" onclick="location.href='ledcube.htm'">LED Cube</button> 
                 <button type="button" onclick="location.href='carnavalinp.htm'">Toulouse Carnival</button>
-            </div>
-            <div class="mainpanel">
+            </aside>
+            <article>
                 <h1>Homemade arcade station</h1>
                 <h2>Designed over the structure of a dead upright piano</h2>
                 <img src="img/arcade/1.jpg" alt="img"/>       
@@ -43,8 +43,13 @@
                 <img src="img/arcade/23.jpg" alt="img"/>       
                 <img src="img/arcade/24.jpg" alt="img"/>       
                 <img src="img/arcade/25.jpg" alt="img"/>       
-            </div>
-        </div>
+            </article>
+ 
+            <footer>
+		        <p><small>&copy; Copyright Robin Beilvert 2015. All Rights Reserved.</small></p>
+	        </footer>
+
+       </div><!--wrapper-->
     </body>
 
 </html>
