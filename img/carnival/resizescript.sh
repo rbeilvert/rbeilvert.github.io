@@ -1,3 +1,10 @@
-for file in *.jpg
-do convert $file -resize 25% -unsharp 0x1 $file
-done
+convert camila.jpg -resize 50% -unsharp 0x1 camila.jpg
+convert deskcrafting.jpg -resize 50% -unsharp 0x1 deskcrafting.jpg
+convert drillers.jpg -resize 50% -unsharp 0x1 drillers.jpg
+convert obelisks.jpg -resize 50% -unsharp 0x1 obelisks.jpg
+convert palmtrees.jpg -resize 50% -unsharp 0x1 palmtrees.jpg
+convert parked.jpg -resize 50% -unsharp 0x1 parked.jpg
+convert paws.jpg -resize 50% -unsharp 0x1 paws.jpg
+convert rawhead.jpg -resize 50% -unsharp 0x1 rawhead.jpg
+convert rawonfloat.jpg -resize 50% -unsharp 0x1 rawonfloat.jpg
+convert throne.jpg -resize 50% -unsharp 0x1 throne.jpg
