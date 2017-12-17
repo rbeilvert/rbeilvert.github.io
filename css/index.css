@@ -1,0 +1,7 @@
+body {
+	background-image: url(../img/index/20171101-wolf.jpg);
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center top;
+	background-attachment: fixed;
+}
