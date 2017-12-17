@@ -1,11 +1,12 @@
-body {
-	height:100%;
-	background-image: url(../img/index/20171101-wolf.jpg);
-	background-repeat: no-repeat;
-	background-position: center top;
-	background-attachment: fixed;
-	-webkit-background-size: cover;
-	-moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
+html,body{
+	height:100%
 }
+
+body{
+	background:url(../img/index/20171101-wolf.jpg) no-repeat center top fixed;
+	-moz-background-size:cover;
+	-webkit-background-size:cover;
+	-o-background-size:cover;
+	background-size:cover
+}
+
