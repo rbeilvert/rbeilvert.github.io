@@ -22,6 +22,35 @@ div.wrapper {
     margin-bottom: 10px
 }
 
+.column {
+    float: left;
+    width: 47.5%;
+    padding: 10px;
+}
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+button {
+    /*color: white;*/
+    margin: 10px 8px 10px 8px;
+    width: 130px;
+    background-color: rgba(245, 245, 245, 0.9);
+    border-color: rgba(0, 0, 0, 0.1);
+    border-width: 1px;
+    border-radius:2px;
+}
+button.currentpage {
+    background-color: rgba(230, 230, 230, 0.9);
+    border-color: rgba(0, 0, 0, 0.1);
+    border-width: 1px;
+    border-radius:2px;
+}
+
+
 hr {
 	border-style: none;
 	height: 2px;
@@ -38,10 +67,12 @@ aside {
 article {
     float: right;
     width: 810px;
-    padding: 0px 15px 10px 15px;
+    padding: 0px 2% 10px 2%;
     border-radius:3px;
-    background-color: rgba(245,245,245,.8);;
+    background-color: rgba(245,245,245,.8);
 }
+
+
 
 footer {
     float: left
@@ -54,19 +85,17 @@ img.banner {
     height: 100px
 }
 
-button {
-    /*color: white;*/
-    margin: 10px 8px 10px 8px;
-    width: 130px;
-    border-color: rgba(0, 0, 0, 0.1);
-    border-width: 1px;
-    border-radius:2px;
+img.artwork {
+    height: auto;
+    width: 100%;
+    transition: transform .2s;
 }
-button.currentpage {
-    border-color: rgba(0, 0, 0, 0.1);
-    border-width: 1px;
-    border-radius:2px;
+.artwork:hover {
+    -ms-transform: scale(1.8);
+    -webkit-transform: scale(1.8);
+    transform: scale(1.8);
 }
+
 
 
 h2 {
