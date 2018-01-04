@@ -11,7 +11,8 @@
         <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
     </head>
 
-    <body>        
+    <body>  
+	
         <div class="wrapper">
             <header>
                 <h1>Robin Beilvert - Projects gathering blog</h1>
@@ -30,46 +31,63 @@
                 <button type="button" onclick="location.href='info.htm'">Info</button>
             </aside>
             <article>
-                <h1>Painting / Drawing hobbie</h1>
-				<hr>
 				
 				<div class="row">
 					<div class="column">
-						<h2>Rick and Morty fan art</h2><p>09/2017</p>
+						<h1>Painting / Drawing hobbie</h1>
+					</div>
+					<div class="column" style="padding-top:20px;">
+							<a href="javascript:void(0)" onclick="openTab(event, 'Painting');">
+								<div class="column tablink bottom-bar border-green hover-lightgrey" style="width:40%; margin-right:10px;">Painting</div>
+							</a>
+							<a href="javascript:void(0)" onclick="openTab(event, 'Sketching');">
+								<div class="column tablink bottom-bar hover-lightgrey" style="width:40%; margin-left:10px;">Sketching</div>
+							</a>
+					</div>
+				</div>
+				<hr>
+					
+					
+					
+				<div id="Painting" class="row tab" style="display:block">
+					<div class="column">
+						<h2>Rick and Morty fan art</h2> <p>09/2017</p>
 						<img class="artwork" src="img/art/20170910-Rick_Morty.jpg" alt="img">
-						<h2>Wild robin</h2>
-						<p>09/2017</p>
+						
+						<h2>Wild robin</h2> <p>09/2017</p>
 						<img class="artwork" src="img/art/20170920-robin_bird.jpg" alt="img">
-						<h2>Impish wolf</h2>
-						<p>11/2017</p>
+						
+						<h2>Impish wolf</h2> <p>11/2017</p>
 						<img class="artwork" src="img/art/20171101-wolf.jpg" alt="img">
-						<h2>Nude sketch</h2>
-						<p>11/2017</p>
-						<img class="artwork" src="img/art/20171122-woman_back_bent_knee.jpg" alt="img">
-						<h2>Nude sketch</h2>
-						<p>11/2017</p>
+					</div>
+					<div class="column">
+						<h2>Little prince</h2> <p>09/2017</p>
+						<img class="artwork" src="img/art/20170917-little_prince.png" alt="img">
+						
+						<h2>Portray</h2> <p>09/2017</p>
+						<img class="artwork" src="img/art/20170922-Leticia.jpg" alt="img">
+						
+						<h2>Tulips</h2> <p>11/2017</p>
+						<img class="artwork" src="img/art/20171126-tulips.png" alt="img">
+					</div>
+				</div>
+				<div id="Sketching" class="row tab" style="display:none">
+					<div class="column">
+						<h2>Ginkgo still nature</h2> <p>11/2017</p>
+						<img class="artwork" src="img/art/20171108-still_nature_ginkgo.jpg" alt="img">
+						
+						<h2>Nude sketch</h2> <p>11/2017</p>
 						<img class="artwork" src="img/art/20171129-woman_back_sitting.jpg" alt="img">
-						<h2>Nude sketch</h2>
-						<p>12/2017</p>
+						
+						<h2>Nude sketch</h2> <p>12/2017</p>
 						<img class="artwork" src="img/art/20171213-woman_lying_side.jpg" alt="img">
 					</div>
 					<div class="column">
-						<h2>Little prince</h2>
-						<p>09/2017</p>
-						<img class="artwork" src="img/art/20170917-little_prince.png" alt="img">
-						<h2>Portray attempt</h2>
-						<p>09/2017</p>
-						<img class="artwork" src="img/art/20170922-Leticia.jpg" alt="img">
-						<h2>Ginkgo still nature</h2>
-						<p>11/2017</p>
-						<img class="artwork" src="img/art/20171108-still_nature_ginkgo.jpg" alt="img">
-						<h2>Tulips</h2>
-						<p>11/2017</p>
-						<img class="artwork" src="img/art/20171126-tulips.png" alt="img">
-						<h2>Nude sketch</h2>
-						<p>12/2017</p>
+						<h2>Nude sketch</h2> <p>11/2017</p>
+						<img class="artwork" src="img/art/20171122-woman_back_bent_knee.jpg" alt="img">
+						
+						<h2>Nude sketch</h2> <p>12/2017</p>
 						<img class="artwork" src="img/art/20171206-womand_sitting_side.jpg" alt="img">
-					
 					</div>
 				</div>
 					
@@ -81,7 +99,10 @@
 		        <p><small>&copy; 2018 Robin Beilvert</small></p>
 	        </footer>
 
-       </div><!--wrapper-->
+		</div> <!--wrapper-->
+	   
+		<script src="js/script.js"></script>
+		
     </body>
 
 </html>

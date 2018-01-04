@@ -13,6 +13,7 @@ body {
 }
 
 div {
+	color:#000000;
     width: 100%;
 
 }
@@ -21,7 +22,6 @@ div.wrapper {
     border-color: transparent;
     margin-bottom: 10px
 }
-
 .column {
     float: left;
     width: 47.5%;
@@ -33,6 +33,9 @@ div.wrapper {
     display: table;
     clear: both;
 }
+.bottom-bar{border-bottom:4px solid #ccc;}
+.border-green{border-color:#80AA44}
+.hover-lightgrey:hover {background-color:#E6E6E6;}
 
 button {
     /*color: white;*/
@@ -91,13 +94,11 @@ img.artwork {
     transition: transform .2s;
 }
 .artwork:hover {
-    -ms-transform: scale(1.8);
-    -webkit-transform: scale(1.8);
-    transform: scale(1.8);
+    -ms-transform: scale(1.75);
+    -webkit-transform: scale(1.75);
+    transform: scale(1.75);
 }
 
-
-
 h2 {
-    font-size: 1.2em;
+    font-size: 1.15em;
 }
