@@ -33,7 +33,7 @@ div.wrapper {
     display: table;
     clear: both;
 }
-.bottom-bar{border-bottom:4px solid #ccc;}
+.bottom-bar{border-bottom:6px solid #ccc;}
 .border-green{border-color:#80AA44}
 .hover-lightgrey:hover {background-color:#E6E6E6;}
 
