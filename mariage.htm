@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<link rel="stylesheet" href="css/mariage.css"/>
+		<link rel="stylesheet" href="css/wedding.css"/>
 		<title>Mariage Lorena&Robin</title>
 		<meta name="description" content="Projects gathering blog"> 
 		<meta name="keywords" content="electronics, IoT, Robotics"> 
@@ -16,34 +16,31 @@
 		</style>
 	</head>
 	<body>
-		<h1>Mariage Lorena & Robin</h1>
+		<h1 style="text-indent: 15%">Mariage Lorena & Robin</h1>
 		<article>
+            <h2>Date</h2>
+			<p>Nous célèbrerons notre mariage le <strong>09 juin 2018 !</strong></p>
+		
             <h2>Lieu du mariage</h2>
-			
+			<p>Le mariage aura lieu à la mairie de l'<strong>Immaculée</strong>, à <strong>Saint-Nazaire</strong>.</p>
+			<p>Voici un plan pour s'y retrouver, sur lequel sont indiqués :
+				<ul>
+					<li>La gare de Saint-Nazaire</li>
+					<li>L'arrêt de bus "Gare SNCF" des lignes <strong>T2</strong> (directe) ou <strong>U3</strong> et <strong>hélYce</strong> (correspondance ligne <strong>U4</strong>), pour se rendre à l'Immaculée</li>
+					<li>L'arrêt de bus "Immaculée" (<strong>T2</strong>, <strong>U4</strong>)</li>
+					<li>La mairie de l'Immaculée où aura lieu le mariage</li>
+				</ul>
+				Pour choisir un intinéraire de bus, <a target="_blank" href="http://www.destineo.fr/fr/schedule/">cliquez sur ce lien (destineo.fr)</a> et utilisez la section 
+				<em>Horaires entre deux arrêts ou entre deux gares</em>, en renseignant <strong>Gare SNCF (Saint-Nazaire)</strong> comme point de départ et <strong>Immaculée (Saint-Nazaire)</strong> comme point d'arrivée 
+				(attention, les horaires peuvent différer le samedi).
+			</p>
 			<div id="map"></div>
-			<script>
-			function initMap() {
-				var labelB = {label: 'B'}
-				var bus = {lat: 47.282663, lng: -2.261125};
-				var mairieimmaculee = {lat: 47.282762, lng: -2.260120};
-				var mapcenter = {lat:47.278825 , lng: -2.235079}
-				var map = new google.maps.Map(document.getElementById('map'), {
-					zoom: 14,
-					center: mapcenter
-				});
-				var marker = new google.maps.Marker({
-					position: bus,
-					map: map
-				});
-				var marker = new google.maps.Marker({
-					position: mairieimmaculee,
-					map: map
-				});
-			}
+			<script async defer src="js/wedding.js">
 			</script>
 			<script async defer
 			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCg8jbq8zLqbpkQgT9VJxCMyEiVOxZkHK4&callback=initMap">
 			</script>
+			
 		</article>
 		
 		<footer>
@@ -53,66 +50,3 @@
 </html>
 
 
-
-
-
-
-
-
-
-
-
-<!--
-<!DOCTYPE html>
-<html>
-    
-    <head>
-        <link rel="stylesheet" href="css/mariage.css"/>
-        <title>Mariage Lorena&Robin</title>
- 	    <meta name="description" content="Projects gathering blog"> 
-	    <meta name="keywords" content="electronics, IoT, Robotics"> 
-	    <meta name="author" content="Robin Beilvert"> 
-	    <meta charset="UTF-8"> 
-
-    </head>
-
-    <body>
-        <div class="wrapper">
-            <header>
-                
-            </header>
-			
-            <article>
-				
-				<div id="map"></div>
-				<script>
-				  function initMap() {
-					var uluru = {lat: -25.363, lng: 131.044};
-					var map = new google.maps.Map(document.getElementById('map'), {
-					  zoom: 4,
-					  center: uluru
-					});
-					var marker = new google.maps.Marker({
-					  position: uluru,
-					  map: map
-					});
-				  }
-				</script>
-				<script>
-					async defer
-					src ="https://maps.googleapis.com/maps/api/js?key=AIzaSyCg8jbq8zLqbpkQgT9VJxCMyEiVOxZkHK4&callback=initMap"
-				</script>
-
-
-	
-            </article>
-
-            <footer>
-		        <p><small>&copy; 2018 Robin Beilvert</small></p>
-	        </footer>
-
-        </div>
-    </body>
-
-</html>
--->
