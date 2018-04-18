@@ -18,14 +18,33 @@
 	<body>
 		<h1 style="text-indent: 15%">Mariage Lorena & Robin</h1>
 		<article>
-			<p>Cette page regroupe les informations relatives à notre mariage, elle sera mise à jour avec l'avancement de l'organisation de l'évènement <img style="position: relative; top: 6px" src="img/wedding/wink.png" alt="-"> </p>
+			<div class="row">
+				<div class="column left">
+					<p>
+						Cette page regroupe les informations relatives à notre mariage,
+						elle sera mise à jour avec l'avancement de l'organisation de l'évènement <img style="position: relative; top: 4px" src="img/wedding/wink.png" alt=";)">
+					</p>
+				</div>
+				<div class="column right">
+					<audio id="audiobckgnd" controls autoplay> 
+						<source src="audio/LangLang_FranzLiszt-LiebestraumNo3.mp3" type="audio/mpeg">
+						<em>Lecteur audio non supoporté par votre navigateur</em>
+					</audio>
+					<script>
+						var aud = document.getElementById("audiobckgnd");
+						aud.volume = 0.5;
+					</script>
+					Franz Liszt - Rêve d'amour<br>- interprété par Lang Lang -
+				</div>
+			</div> 
+		
 			<hr>
             <h2>Date</h2>
 			<p>Nous célèbrerons notre mariage le <strong>09 juin 2018 !</strong></p>
 		
             <h2>Lieu du mariage</h2>
-			<p>Le mariage aura lieu à la mairie de l'<strong>Immaculée</strong>, à <strong>Saint-Nazaire</strong>.</p>
-			<p>Voici un plan pour s'y retrouver, sur lequel sont indiqués :
+			<p>La cérémonie civile aura lieu à <strong>11h30</strong> à la mairie de l'<strong>Immaculée</strong>, à <strong>Saint-Nazaire</strong>.</p>
+			<p>Pour s'y retrouver, il se trouve un plan en bas de cette page, sur lequel sont indiqués :
 				<ul>
 					<li>La gare de Saint-Nazaire</li>
 					<li>L'arrêt de bus "Gare SNCF" des lignes <strong>T2</strong> (directe) ou <strong>U3</strong> et <strong>hélYce</strong> (correspondance ligne <strong>U4</strong>), pour se rendre à l'Immaculée</li>
@@ -35,12 +54,28 @@
 			</p>
 			<p>
 				Pour choisir un intinéraire de bus, <a target="_blank" href="http://www.destineo.fr/fr/schedule/">cliquez sur ce lien (destineo.fr)</a> et utilisez la section 
-				<em>Horaires entre deux arrêts ou entre deux gares</em>, en renseignant <strong>Gare SNCF (Saint-Nazaire)</strong> comme point de départ et <strong>Immaculée (Saint-Nazaire)</strong> comme point d'arrivée 
+				<em>Horaires entre deux arrêts ou entre deux gares</em>, en renseignant <em>Gare SNCF (Saint-Nazaire)</em> comme point de départ et <em>Immaculée (Saint-Nazaire)</em> comme point d'arrivée 
 				(attention, les horaires peuvent différer le samedi).
 			</p>
 			<p>
 				Un parking est également disponible, au niveau de l'arrêt de bus "Immaculée".
 			</p>
+			
+			
+            <h2>Après la cérémonie civile</h2>
+			<h3>Le midi !</h3>
+				<p>Direction le restaurant <strong>Le Cap</strong> du <strong>Casino de Saint Brévin</strong>, également représenté sur la carte ci-dessous !</p>
+				<p>La plage est en face du restaurant, il suffit de traverser la route, pour ceux qui veulent se promener dans le sable ou piquer une tête ;)</p>
+				<p>Une navette sera réservée par aller de la mairie au restaurant le midi, en plus des quelques voitures disponibles.</p>
+            <h3>Et après ?</h3>
+				<p>Le soir, le bar du Casino de Saint Brévin sera privatisé jusqu'à 2h du matin.</p>
+				<p>
+					Une navette passera à 2h du matin pour ramener les personnes non véhiculées
+					- ou qui <em>pour des raisons</em> jugent plus judicieux de prendre la navette ;) - jusqu'à leur lieu d'hébergement.
+				</p>
+			
+			
+			
 			<div id="map"></div>
 			<script src="js/wedding.js">
 			</script>
