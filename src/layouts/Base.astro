@@ -1,0 +1,71 @@
+---
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Sidebar from "../components/Sidebar.astro";
+import Footer from "../components/Footer.astro";
+import { SITE } from "../consts";
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  showSidebar?: boolean;
+}
+
+const {
+  title,
+  description = SITE.description,
+  ogImage = SITE.ogImage,
+  showSidebar = true,
+} = Astro.props;
+
+const fullTitle = title ? `${title} — ${SITE.title}` : `${SITE.title} — ${SITE.tagline}`;
+const canonical = new URL(Astro.url.pathname, SITE.url).toString();
+const ogImageUrl = new URL(ogImage, SITE.url).toString();
+const path = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={SITE.author} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+  </head>
+  <body>
+    <Header />
+    <div class="mx-auto max-w-6xl px-4 py-6 md:py-10">
+      {
+        showSidebar ? (
+          <div class="flex flex-col gap-6 md:flex-row md:gap-10">
+            <Sidebar current={path} />
+            <article class="prose-article min-w-0 flex-1 rounded-lg bg-white p-5 md:p-8 shadow-sm ring-1 ring-stone-200 dark:bg-stone-900 dark:ring-stone-800">
+              <slot />
+            </article>
+          </div>
+        ) : (
+          <article class="prose-article">
+            <slot />
+          </article>
+        )
+      }
+    </div>
+    <Footer />
+  </body>
+</html>
