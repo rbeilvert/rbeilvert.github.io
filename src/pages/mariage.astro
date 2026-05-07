@@ -1,0 +1,100 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base
+  title="Mariage Lorena & Robin"
+  description="Informations about our wedding"
+  ogImage="/img/wedding/flower.jpg"
+  showSidebar={false}
+>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+
+  <h1 class="text-center">Mariage Lorena &amp; Robin</h1>
+
+  <div class="grid md:grid-cols-2 gap-6 items-center">
+    <p>
+      Cette page regroupe les informations relatives à notre mariage, elle
+      sera mise à jour avec l'avancement de l'organisation de l'évènement
+      <img
+        src="/img/wedding/wink.png"
+        alt=";)"
+        class="inline align-middle"
+      />
+    </p>
+    <div>
+      <audio id="audiobckgnd" controls>
+        <source
+          src="/audio/LangLang_FranzLiszt-LiebestraumNo3.mp3"
+          type="audio/mpeg"
+        />
+        <em>Lecteur audio non supporté par votre navigateur</em>
+      </audio>
+      <p class="text-sm mt-2">
+        Franz Liszt — Rêve d'amour<br />— interprété par Lang Lang —
+      </p>
+    </div>
+  </div>
+
+  <hr />
+  <h2>Date</h2>
+  <p>
+    Nous célébrerons notre mariage le <strong>09 juin 2018&nbsp;!</strong>
+  </p>
+
+  <h2>Lieu du mariage</h2>
+  <p>
+    La cérémonie civile aura lieu à <strong>11h30</strong> à la mairie de
+    l'<strong>Immaculée</strong>, à <strong>Saint-Nazaire</strong>.
+  </p>
+  <p>Pour s'y retrouver, le plan est en bas de page&nbsp;:</p>
+  <ul>
+    <li>La gare de Saint-Nazaire</li>
+    <li>
+      L'arrêt de bus « Gare SNCF » des lignes <strong>T2</strong> (directe) ou
+      <strong>U3</strong> et <strong>hélYce</strong> (correspondance ligne
+      <strong>U4</strong>)
+    </li>
+    <li>L'arrêt de bus « Immaculée » (<strong>T2</strong>, <strong>U4</strong>)</li>
+    <li>
+      La mairie de l'Immaculée (2 rue Philibert Delorme 44600 Saint-Nazaire)
+    </li>
+  </ul>
+
+  <h2>Après la cérémonie civile</h2>
+  <h3>Le midi&nbsp;!</h3>
+  <p>
+    Direction le restaurant <strong>Le Cap</strong> du
+    <strong>Casino de Saint-Brévin</strong>.
+  </p>
+  <h3>Et après&nbsp;?</h3>
+  <p>
+    Le soir, le bar du Casino de Saint-Brévin sera privatisé jusqu'à 2h du
+    matin.
+  </p>
+
+  <p>
+    <strong>Cliquez sur les marqueurs pour afficher leur description&nbsp;:</strong>
+  </p>
+
+  <div id="map" style="height: 420px;" class="rounded-lg my-4"></div>
+
+  <script
+    is:inline
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+  <script src="/scripts/wedding.js" is:inline></script>
+
+  <script is:inline>
+    document.addEventListener("DOMContentLoaded", () => {
+      const aud = document.getElementById("audiobckgnd");
+      if (aud) aud.volume = 0.5;
+    });
+  </script>
+</Base>

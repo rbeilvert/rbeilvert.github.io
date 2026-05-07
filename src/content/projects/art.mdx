@@ -1,0 +1,101 @@
+---
+title: "Art — Painting & Drawing"
+summary: "A small selection of paintings and sketches."
+tags: ["drawing", "painting", "acrylics", "artwork"]
+order: 8
+---
+
+import { Image } from "astro:assets";
+
+import papi from "../../assets/projects/art/paint/20180402-papi.jpg";
+import robinBird from "../../assets/projects/art/paint/20170920-robin_bird.jpg";
+import littlePrince from "../../assets/projects/art/paint/20170917-little_prince.png";
+import wolf from "../../assets/projects/art/paint/20171101-wolf.jpg";
+import tulips from "../../assets/projects/art/paint/20171126-tulips.png";
+import rickMorty from "../../assets/projects/art/paint/20170910-Rick_Morty.jpg";
+import jodie from "../../assets/projects/art/sketch/20180105-Jodie_Whittaker.jpg";
+import tennant from "../../assets/projects/art/sketch/20180108-David_Tennant.jpg";
+import portrait1 from "../../assets/projects/art/sketch/20180104-portrait.jpg";
+import portrait2 from "../../assets/projects/art/sketch/20171219-portrait.jpg";
+import lying from "../../assets/projects/art/sketch/20171213-woman_lying_side.jpg";
+import sittingSide from "../../assets/projects/art/sketch/20171206-woman_sitting_side.jpg";
+import backSitting from "../../assets/projects/art/sketch/20171129-woman_back_sitting.jpg";
+import bentKnee from "../../assets/projects/art/sketch/20171122-woman_back_bent_knee.jpg";
+import ginkgo from "../../assets/projects/art/sketch/20171108-still_nature_ginkgo.jpg";
+
+export const figureClass =
+  "rounded-lg shadow-sm w-full h-auto";
+export const captionClass =
+  "mt-2 text-sm text-stone-600 dark:text-stone-400";
+export const widths = [320, 480, 640];
+export const sizes = "(min-width: 640px) 320px, 100vw";
+
+## Painting
+
+<div class="not-prose grid grid-cols-1 sm:grid-cols-2 gap-6 my-6">
+  <figure class="m-0">
+    <Image src={papi} alt="Grandpa — acrylic painting" widths={widths} sizes={sizes} loading="eager" fetchpriority="high" decoding="async" class={figureClass} />
+    <figcaption class={captionClass}><strong>Grandpa</strong> <span class="opacity-70">04/2018</span></figcaption>
+  </figure>
+  <figure class="m-0">
+    <Image src={robinBird} alt="Wild robin — painting" widths={widths} sizes={sizes} loading="eager" decoding="async" class={figureClass} />
+    <figcaption class={captionClass}><strong>Wild robin</strong> <span class="opacity-70">09/2017</span></figcaption>
+  </figure>
+  <figure class="m-0">
+    <Image src={littlePrince} alt="Little prince — painting" widths={widths} sizes={sizes} class={figureClass} />
+    <figcaption class={captionClass}><strong>Little prince</strong> <span class="opacity-70">09/2017</span></figcaption>
+  </figure>
+  <figure class="m-0">
+    <Image src={wolf} alt="Impish wolf — painting" widths={widths} sizes={sizes} class={figureClass} />
+    <figcaption class={captionClass}><strong>Impish wolf</strong> <span class="opacity-70">11/2017</span></figcaption>
+  </figure>
+  <figure class="m-0">
+    <Image src={tulips} alt="Tulips — painting" widths={widths} sizes={sizes} class={figureClass} />
+    <figcaption class={captionClass}><strong>Tulips</strong> <span class="opacity-70">11/2017</span></figcaption>
+  </figure>
+  <figure class="m-0">
+    <Image src={rickMorty} alt="Rick and Morty fan art" widths={widths} sizes={sizes} class={figureClass} />
+    <figcaption class={captionClass}><strong>Rick and Morty fan art</strong> <span class="opacity-70">09/2017</span></figcaption>
+  </figure>
+</div>
+
+## Sketching
+
+<div class="not-prose grid grid-cols-1 sm:grid-cols-2 gap-6 my-6">
+  <figure class="m-0">
+    <Image src={jodie} alt="Jodie Whittaker — sketch" widths={widths} sizes={sizes} class={figureClass} />
+    <figcaption class={captionClass}><strong>Jodie Whittaker</strong> <span class="opacity-70">01/2018</span></figcaption>
+  </figure>
+  <figure class="m-0">
+    <Image src={tennant} alt="David Tennant — sketch" widths={widths} sizes={sizes} class={figureClass} />
+    <figcaption class={captionClass}><strong>David Tennant</strong> <span class="opacity-70">01/2018</span></figcaption>
+  </figure>
+  <figure class="m-0">
+    <Image src={portrait1} alt="Portrait — sketch" widths={widths} sizes={sizes} class={figureClass} />
+    <figcaption class={captionClass}><strong>Portrait</strong> <span class="opacity-70">01/2018</span></figcaption>
+  </figure>
+  <figure class="m-0">
+    <Image src={portrait2} alt="Portrait — sketch" widths={widths} sizes={sizes} class={figureClass} />
+    <figcaption class={captionClass}><strong>Portrait</strong> <span class="opacity-70">12/2017</span></figcaption>
+  </figure>
+  <figure class="m-0">
+    <Image src={lying} alt="Nude sketch" widths={widths} sizes={sizes} class={figureClass} />
+    <figcaption class={captionClass}><strong>Nude sketch</strong> <span class="opacity-70">12/2017</span></figcaption>
+  </figure>
+  <figure class="m-0">
+    <Image src={sittingSide} alt="Nude sketch" widths={widths} sizes={sizes} class={figureClass} />
+    <figcaption class={captionClass}><strong>Nude sketch</strong> <span class="opacity-70">12/2017</span></figcaption>
+  </figure>
+  <figure class="m-0">
+    <Image src={backSitting} alt="Nude sketch" widths={widths} sizes={sizes} class={figureClass} />
+    <figcaption class={captionClass}><strong>Nude sketch</strong> <span class="opacity-70">11/2017</span></figcaption>
+  </figure>
+  <figure class="m-0">
+    <Image src={bentKnee} alt="Nude sketch" widths={widths} sizes={sizes} class={figureClass} />
+    <figcaption class={captionClass}><strong>Nude sketch</strong> <span class="opacity-70">11/2017</span></figcaption>
+  </figure>
+  <figure class="m-0">
+    <Image src={ginkgo} alt="Ginkgo still nature — sketch" widths={widths} sizes={sizes} class={figureClass} />
+    <figcaption class={captionClass}><strong>Ginkgo still nature</strong> <span class="opacity-70">11/2017</span></figcaption>
+  </figure>
+</div>
