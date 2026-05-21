@@ -1,6 +1,6 @@
 ---
 title: "French Robotics Cup"
-summary: "ENSEEIHT's 7Robot club at the national robotics challenge — quarter-finalists out of 180+ teams."
+summary: "ENSEEIHT's 7Robot club at the national robotics challenge, quarter-finalists out of 180+ teams."
 cover: "../../assets/covers/frenchroboticscup.png"
 coverAlt: "French Robotics Cup banner"
 tags: ["robotics", "electronics", "sensors", "France"]
@@ -29,11 +29,11 @@ For this year, we decided to gather all the electronic functions on a single boa
 
 ![Board bottom](../../assets/projects/frenchroboticscup/asservbot_black.png)
 
-Intelligence — [Raspberry Pi 2](https://www.raspberrypi.org/products/raspberry-pi-2-model-b/):
+Intelligence: [Raspberry Pi 2](https://www.raspberrypi.org/products/raspberry-pi-2-model-b/):
 
 ![Raspberry Pi 2](../../assets/projects/frenchroboticscup/raspi2.png)
 
-A video from the cup, with Hitchbot and Tarantibot in the foreground and SpaceCrackers — another team from Toulouse — in the background:
+A video from the cup, with Hitchbot and Tarantibot in the foreground and SpaceCrackers (another team from Toulouse) in the background:
 
 <video controls poster="/img/frenchroboticscup/logosimple.png">
   <source src="/img/frenchroboticscup/7RobotSpaceCrackers.webm" type="video/webm" />

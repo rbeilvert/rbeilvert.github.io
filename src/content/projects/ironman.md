@@ -8,7 +8,7 @@ tags: ["handcraft", "cardboard", "Iron Man", "ENSEEIHT"]
 order: 6
 ---
 
-## Cardboard Iron Man face with glowing eyes — made for the *Hall Comics* party at ENSEEIHT
+## Cardboard Iron Man face with glowing eyes, made for the *Hall Comics* party at ENSEEIHT
 
 ![Cutting cardboard pieces](../../assets/projects/ironman/1.jpg)
 
@@ -30,6 +30,6 @@ The glowing eyes' brightness was saw-toothed and featured instant fade-in and sl
 
 ![Zoomed-in shot](../../assets/projects/ironman/zoom.jpg)
 
-Here comes the BDA (*Bureau Des Arts*) team of the ENSEEIHT Students Association — they spent hours cutting out and painting the different parts of the structure after drawing those on large cardboard panels with the help of an overhead projector.
+Here comes the BDA (*Bureau Des Arts*) team of the ENSEEIHT Students Association. They spent hours cutting out and painting the different parts of the structure after drawing those on large cardboard panels with the help of an overhead projector.
 
 The last three photos were taken by [Photo7](https://www.bde.enseeiht.fr/clubs/photo/fiche/), the ENSEEIHT photography club. All rights on these belong to them.

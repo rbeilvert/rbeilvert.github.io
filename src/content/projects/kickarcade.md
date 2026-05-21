@@ -1,5 +1,5 @@
 ---
-title: "KickArcade — Homemade arcade machine"
+title: "KickArcade: Homemade arcade machine"
 summary: "A second arcade build, designed over the structure of a dead upright piano."
 cover: "../../assets/covers/kickarcade.png"
 coverAlt: "KickArcade banner"

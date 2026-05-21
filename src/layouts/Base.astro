@@ -19,7 +19,7 @@ const {
   showSidebar = true,
 } = Astro.props;
 
-const fullTitle = title ? `${title} — ${SITE.title}` : `${SITE.title} — ${SITE.tagline}`;
+const fullTitle = title ? `${title} | ${SITE.title}` : `${SITE.title} | ${SITE.tagline}`;
 const canonical = new URL(Astro.url.pathname, SITE.url).toString();
 const ogImageUrl = new URL(ogImage, SITE.url).toString();
 const path = Astro.url.pathname;

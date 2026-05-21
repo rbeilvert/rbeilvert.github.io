@@ -1,0 +1,514 @@
+---
+import Base from "../../layouts/Base.astro";
+
+const PITCH_CLASS_LABELS = [
+  "C",
+  "C♯/D♭",
+  "D",
+  "D♯/E♭",
+  "E",
+  "F",
+  "F♯/G♭",
+  "G",
+  "G♯/A♭",
+  "A",
+  "A♯/B♭",
+  "B",
+];
+
+const RADIUS = 115;
+const buttons = PITCH_CLASS_LABELS.map((label, i) => {
+  const angle = ((i * 360) / 12 - 90) * (Math.PI / 180);
+  return {
+    pc: i,
+    label,
+    x: Math.cos(angle) * RADIUS,
+    y: Math.sin(angle) * RADIUS,
+  };
+});
+---
+
+<Base
+  title="Music Reading Trainer"
+  description="Identify musical notes on a staff. Interactive ear-and-eye training with treble and bass clef, all 12 chromatic notes."
+>
+  <h1>Music Reading Trainer</h1>
+  <p>
+    A note appears on the staff. Click the matching note on the wheel below.
+    Includes all 12 chromatic notes, with sharps and flats spelled at random.
+    Switch between treble and bass clef anytime.
+  </p>
+
+  <div
+    class="not-prose my-5 flex flex-wrap items-center gap-3"
+    aria-label="Trainer controls"
+  >
+    <span class="text-sm text-stone-600 dark:text-stone-400">Clef:</span>
+    <div
+      class="inline-flex overflow-hidden rounded-md ring-1 ring-stone-300 dark:ring-stone-700"
+      role="group"
+    >
+      <button
+        type="button"
+        data-clef="treble"
+        class="clef-btn is-active px-3 py-1.5 text-sm"
+      >
+        Treble
+      </button>
+      <button
+        type="button"
+        data-clef="bass"
+        class="clef-btn px-3 py-1.5 text-sm"
+      >
+        Bass
+      </button>
+    </div>
+    <button
+      type="button"
+      id="btn-reset"
+      class="rounded-md px-3 py-1.5 text-sm ring-1 ring-stone-300 hover:bg-stone-100 dark:ring-stone-700 dark:hover:bg-stone-800"
+    >
+      Reset score
+    </button>
+    <div class="ml-auto text-sm">
+      Score:
+      <span id="score-correct" class="font-semibold">0</span>
+      /
+      <span id="score-total" class="font-semibold">0</span>
+    </div>
+  </div>
+
+  <div class="not-prose mx-auto w-full max-w-[520px]">
+    <div class="rounded-lg bg-white p-4 shadow-sm ring-1 ring-stone-200">
+      <svg
+        id="staff"
+        viewBox="0 0 400 200"
+        role="img"
+        aria-label="Music staff"
+        class="block h-auto w-full"></svg>
+    </div>
+    <div
+      id="feedback"
+      class="mt-2 h-5 text-center text-sm text-stone-500 dark:text-stone-400"
+      aria-live="polite"
+    >
+      Click the note name on the wheel.
+    </div>
+  </div>
+
+  <div
+    class="not-prose relative mx-auto mt-6"
+    style="width: 300px; height: 300px;"
+  >
+    <div
+      class="absolute inset-0 rounded-full ring-1 ring-stone-300 dark:ring-stone-700"
+      aria-hidden="true"
+    >
+    </div>
+    {
+      buttons.map((b) => (
+        <button
+          type="button"
+          data-pc={b.pc}
+          class="note-btn absolute flex items-center justify-center rounded-full bg-white text-xs font-medium text-stone-800 ring-1 ring-stone-300 transition-colors hover:bg-emerald-50 hover:ring-emerald-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 dark:bg-stone-800 dark:text-stone-100 dark:ring-stone-700 dark:hover:bg-emerald-900/30"
+          style={`width: 54px; height: 54px; left: 50%; top: 50%; transform: translate(calc(-50% + ${b.x}px), calc(-50% + ${b.y}px));`}
+          aria-label={`Note ${b.label}`}
+        >
+          {b.label}
+        </button>
+      ))
+    }
+  </div>
+
+  <style>
+    .clef-btn {
+      background: #fff;
+      color: #44403c;
+    }
+    :global(.dark) .clef-btn,
+    @media (prefers-color-scheme: dark) {
+      .clef-btn {
+        background: #1c1917;
+        color: #d6d3d1;
+      }
+    }
+    .clef-btn.is-active {
+      background: #059669;
+      color: #fff;
+    }
+    .note-btn.is-correct {
+      background: #10b981 !important;
+      color: #fff !important;
+      border-color: #10b981 !important;
+    }
+    .note-btn.is-wrong {
+      background: #ef4444 !important;
+      color: #fff !important;
+      border-color: #ef4444 !important;
+    }
+    .feedback-ok {
+      color: #047857;
+    }
+    .feedback-bad {
+      color: #b91c1c;
+    }
+    .feedback-neutral {
+      color: #57534e;
+    }
+    @media (prefers-color-scheme: dark) {
+      .feedback-ok {
+        color: #34d399;
+      }
+      .feedback-bad {
+        color: #f87171;
+      }
+      .feedback-neutral {
+        color: #a8a29e;
+      }
+    }
+    #staff text.music-glyph {
+      font-family:
+        "Bravura",
+        "Apple Symbols",
+        "Segoe UI Symbol",
+        "Symbola",
+        "Noto Music",
+        serif;
+    }
+  </style>
+
+  <script is:inline>
+    (() => {
+      const SVG_NS = "http://www.w3.org/2000/svg";
+      const LETTER_IDX = { C: 0, D: 1, E: 2, F: 3, G: 4, A: 5, B: 6 };
+
+      // For each clef, we embed the static SVG via an <image> in the staff.
+      // `aspect` is the source SVG's width/height ratio.
+      // `anchorFraction` is the y-fraction (from the top of the source SVG's
+      // viewBox) of the staff line the clef should align with: the G4 line
+      // for treble and the F3 line for bass. `anchorY` is that staff line's y
+      // in our staff viewBox coordinates. `height` is the clef's rendered
+      // height in our staff coordinates.
+      const CLEF_CONFIG = {
+        treble: {
+          refLetter: "E",
+          refOctave: 4,
+          midiMin: 60, // C4 (middle C)
+          midiMax: 81, // A5
+          href: "/img/music/treble.svg",
+          aspect: 58.853 / 163.626,
+          anchorFraction: 0.595,
+          anchorY: 106, // G4 line
+          height: 84,
+          centerX: 54,
+        },
+        bass: {
+          refLetter: "G",
+          refOctave: 2,
+          midiMin: 40, // E2
+          midiMax: 60, // C4 (middle C)
+          href: "/img/music/bass.svg",
+          aspect: 61.04 / 79.798,
+          anchorFraction: 0.29,
+          anchorY: 82, // F3 line
+          height: 38,
+          centerX: 50,
+        },
+      };
+
+      // [letter, accidental]   accidental: -1 flat, 0 natural, +1 sharp
+      const SHARP_TABLE = [
+        ["C", 0], ["C", 1], ["D", 0], ["D", 1], ["E", 0],
+        ["F", 0], ["F", 1], ["G", 0], ["G", 1], ["A", 0],
+        ["A", 1], ["B", 0],
+      ];
+      const FLAT_TABLE = [
+        ["C", 0], ["D", -1], ["D", 0], ["E", -1], ["E", 0],
+        ["F", 0], ["G", -1], ["G", 0], ["A", -1], ["A", 0],
+        ["B", -1], ["B", 0],
+      ];
+
+      const TOP_LINE_Y = 70;
+      const LINE_SPACING = 12;
+      const BOTTOM_LINE_Y = TOP_LINE_Y + 4 * LINE_SPACING; // 118
+      const STAFF_X1 = 30;
+      const STAFF_X2 = 370;
+      const NOTE_X = 230;
+
+      const state = {
+        clef: "treble",
+        pitch: null,
+        correct: 0,
+        total: 0,
+        locked: false,
+      };
+
+      function midiToSpelling(midi, useFlat) {
+        const pc = ((midi % 12) + 12) % 12;
+        const table = useFlat ? FLAT_TABLE : SHARP_TABLE;
+        const [letter, accidental] = table[pc];
+        // Letter octave from the natural pitch (midi minus accidental)
+        const naturalMidi = midi - accidental;
+        const octave = Math.floor(naturalMidi / 12) - 1;
+        return { midi, pc, letter, octave, accidental };
+      }
+
+      function diatonicStep(letter, octave, clef) {
+        const cfg = CLEF_CONFIG[clef];
+        return (
+          (octave - cfg.refOctave) * 7 +
+          (LETTER_IDX[letter] - LETTER_IDX[cfg.refLetter])
+        );
+      }
+
+      function svgEl(name, attrs) {
+        const el = document.createElementNS(SVG_NS, name);
+        for (const k in attrs) el.setAttribute(k, attrs[k]);
+        return el;
+      }
+
+      function placeClef(svg, cfg) {
+        const width = cfg.height * cfg.aspect;
+        const y = cfg.anchorY - cfg.height * cfg.anchorFraction;
+        const x = cfg.centerX - width / 2;
+        const img = svgEl("image", {
+          href: cfg.href,
+          x,
+          y,
+          width,
+          height: cfg.height,
+          preserveAspectRatio: "xMidYMid meet",
+        });
+        svg.appendChild(img);
+      }
+
+      function drawLedger(svg, y) {
+        svg.appendChild(
+          svgEl("line", {
+            x1: NOTE_X - 14,
+            x2: NOTE_X + 14,
+            y1: y,
+            y2: y,
+            stroke: "#1c1917",
+            "stroke-width": "1.6",
+            "stroke-linecap": "round",
+          }),
+        );
+      }
+
+      function renderStaff() {
+        const svg = document.getElementById("staff");
+        svg.innerHTML = "";
+        const cfg = CLEF_CONFIG[state.clef];
+
+        // 5 staff lines
+        for (let i = 0; i < 5; i++) {
+          const y = TOP_LINE_Y + i * LINE_SPACING;
+          svg.appendChild(
+            svgEl("line", {
+              x1: STAFF_X1,
+              x2: STAFF_X2,
+              y1: y,
+              y2: y,
+              stroke: "#1c1917",
+              "stroke-width": "1.2",
+            }),
+          );
+        }
+
+        // End barlines
+        svg.appendChild(
+          svgEl("line", {
+            x1: STAFF_X1,
+            x2: STAFF_X1,
+            y1: TOP_LINE_Y,
+            y2: BOTTOM_LINE_Y,
+            stroke: "#1c1917",
+            "stroke-width": "1.4",
+          }),
+        );
+        svg.appendChild(
+          svgEl("line", {
+            x1: STAFF_X2,
+            x2: STAFF_X2,
+            y1: TOP_LINE_Y,
+            y2: BOTTOM_LINE_Y,
+            stroke: "#1c1917",
+            "stroke-width": "1.4",
+          }),
+        );
+
+        placeClef(svg, cfg);
+
+        // Note
+        const { letter, octave, accidental } = state.pitch;
+        const step = diatonicStep(letter, octave, state.clef);
+        const y = BOTTOM_LINE_Y - step * (LINE_SPACING / 2);
+
+        // Ledger lines
+        if (step < 0) {
+          for (let s = -2; s >= step; s -= 2) {
+            drawLedger(svg, BOTTOM_LINE_Y - s * (LINE_SPACING / 2));
+          }
+        } else if (step > 8) {
+          for (let s = 10; s <= step; s += 2) {
+            drawLedger(svg, BOTTOM_LINE_Y - s * (LINE_SPACING / 2));
+          }
+        }
+
+        // Quarter-note: filled black head with a stem.
+        // Stem up (on right side) when the note sits below the middle line;
+        // stem down (on left side) when it sits on or above it.
+        const stemUp = step < 4;
+        const headRx = 6.5;
+        const headRy = 5;
+        const stemLength = 30;
+        const stemOffsetX = headRx - 0.5;
+        svg.appendChild(
+          svgEl("ellipse", {
+            cx: NOTE_X,
+            cy: y,
+            rx: headRx,
+            ry: headRy,
+            fill: "#1c1917",
+            transform: `rotate(-22 ${NOTE_X} ${y})`,
+          }),
+        );
+        const stemX = stemUp ? NOTE_X + stemOffsetX : NOTE_X - stemOffsetX;
+        const stemY1 = stemUp ? y - 1 : y + 1;
+        const stemY2 = stemUp ? y - stemLength : y + stemLength;
+        svg.appendChild(
+          svgEl("line", {
+            x1: stemX,
+            x2: stemX,
+            y1: stemY1,
+            y2: stemY2,
+            stroke: "#1c1917",
+            "stroke-width": "1.6",
+            "stroke-linecap": "round",
+          }),
+        );
+
+        // Accidental glyph (♯ or ♭)
+        if (accidental !== 0) {
+          const acc = svgEl("text", {
+            x: NOTE_X - 14,
+            y: y + 7,
+            "font-size": 24,
+            fill: "#1c1917",
+            "text-anchor": "end",
+            class: "music-glyph",
+          });
+          acc.textContent = accidental > 0 ? "♯" : "♭";
+          svg.appendChild(acc);
+        }
+      }
+
+      function noteName(pitch) {
+        const accChar =
+          pitch.accidental === 1
+            ? "♯"
+            : pitch.accidental === -1
+              ? "♭"
+              : "";
+        return `${pitch.letter}${accChar}${pitch.octave}`;
+      }
+
+      function clearButtonStates() {
+        document.querySelectorAll(".note-btn").forEach((b) => {
+          b.classList.remove("is-correct", "is-wrong");
+        });
+      }
+
+      function setFeedback(text, kind) {
+        const fb = document.getElementById("feedback");
+        fb.textContent = text;
+        fb.classList.remove("feedback-ok", "feedback-bad", "feedback-neutral");
+        if (kind) fb.classList.add(`feedback-${kind}`);
+      }
+
+      function newRound() {
+        const cfg = CLEF_CONFIG[state.clef];
+        const midi =
+          cfg.midiMin +
+          Math.floor(Math.random() * (cfg.midiMax - cfg.midiMin + 1));
+        const useFlat = Math.random() < 0.5;
+        state.pitch = midiToSpelling(midi, useFlat);
+        state.locked = false;
+        clearButtonStates();
+        setFeedback("Click the note name on the wheel.", "neutral");
+        renderStaff();
+      }
+
+      function updateScore() {
+        document.getElementById("score-correct").textContent = state.correct;
+        document.getElementById("score-total").textContent = state.total;
+      }
+
+      function handleClick(pc) {
+        if (state.locked || !state.pitch) return;
+        state.locked = true;
+        state.total++;
+        const isCorrect = state.pitch.pc === pc;
+        if (isCorrect) state.correct++;
+        updateScore();
+
+        const clicked = document.querySelector(
+          `.note-btn[data-pc="${pc}"]`,
+        );
+        const correctBtn = document.querySelector(
+          `.note-btn[data-pc="${state.pitch.pc}"]`,
+        );
+
+        if (isCorrect) {
+          clicked.classList.add("is-correct");
+          setFeedback(`Correct! ${noteName(state.pitch)}`, "ok");
+          setTimeout(newRound, 700);
+        } else {
+          clicked.classList.add("is-wrong");
+          correctBtn.classList.add("is-correct");
+          setFeedback(`Wrong! It was ${noteName(state.pitch)}`, "bad");
+          setTimeout(newRound, 1600);
+        }
+      }
+
+      function setClef(clef) {
+        if (!CLEF_CONFIG[clef]) return;
+        state.clef = clef;
+        document.querySelectorAll(".clef-btn").forEach((btn) => {
+          btn.classList.toggle("is-active", btn.dataset.clef === clef);
+        });
+        newRound();
+      }
+
+      function reset() {
+        state.correct = 0;
+        state.total = 0;
+        updateScore();
+        newRound();
+      }
+
+      // Wire up
+      document.querySelectorAll(".note-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          handleClick(parseInt(btn.dataset.pc, 10));
+        });
+      });
+      document.querySelectorAll(".clef-btn").forEach((btn) => {
+        btn.addEventListener("click", () => setClef(btn.dataset.clef));
+      });
+      document.getElementById("btn-reset").addEventListener("click", reset);
+
+      // Deep-link via URL hash (#bass or #treble) for direct testing.
+      const hashTag = location.hash.replace(/^#/, "").split(/[?&]/)[0];
+      if (hashTag === "bass" || hashTag === "treble") {
+        state.clef = hashTag;
+        document.querySelectorAll(".clef-btn").forEach((btn) => {
+          btn.classList.toggle("is-active", btn.dataset.clef === state.clef);
+        });
+      }
+
+      newRound();
+    })();
+  </script>
+</Base>

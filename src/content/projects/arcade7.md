@@ -1,5 +1,5 @@
 ---
-title: "Arcade7 — Homemade arcade machine"
+title: "Arcade7: Homemade arcade machine"
 summary: "An arcade cabinet built into the body of a dead upright piano, designed for ENSEEIHT students' leisure room."
 cover: "../../assets/covers/arcade7.png"
 coverAlt: "Arcade Machine banner"
@@ -21,7 +21,7 @@ After that, we jigsawed out rectangles from the front panel of the piano to plac
 
 ![Window panes added](../../assets/projects/arcade7/addwindowpanes.jpg)
 
-To prevent the screens from any kind of assault from ENSEEIHT *energetic* students, we mounted two half-centimeter polycarbonate bulletproof panes on the screen frames. Well… Good prevention is better than cure, don't you think?
+To prevent the screens from any kind of assault from ENSEEIHT *energetic* students, we mounted two half-centimeter polycarbonate bulletproof panes on the screen frames.
 
 ![LCD screens added](../../assets/projects/arcade7/addlcd.jpg)
 

@@ -18,6 +18,16 @@ const isActive = (href: string) => {
     {
       NAV.map((link, i) => (
         <>
+          {i === 1 && (
+            <h3 class="hidden md:block px-3 pt-2 pb-1 text-xs font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400">
+              Tools
+            </h3>
+          )}
+          {i === 2 && (
+            <h3 class="hidden md:block px-3 pt-2 pb-1 text-xs font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400">
+              Projects
+            </h3>
+          )}
           <a
             href={link.href}
             aria-current={isActive(link.href) ? "page" : undefined}
@@ -30,7 +40,7 @@ const isActive = (href: string) => {
           >
             {link.label}
           </a>
-          {i === 0 && <hr class="hidden md:block my-2 border-stone-200 dark:border-stone-800" />}
+          {(i === 0 || i === 1) && <hr class="hidden md:block my-2 border-stone-200 dark:border-stone-800" />}
         </>
       ))
     }
