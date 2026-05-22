@@ -13,23 +13,23 @@ order: 1
 
 ![Painted panels](../../assets/projects/arcade7/paintedpanels.jpg)
 
-In order to lighten the structure and make some room for the incoming electronics, all the mechanical parts from the piano have been removed and every string has been cut in deafening apocalyptical dissonant chords. Don't forget to put on strong gloves and glasses if you do that, there really is a lot of tension in these!
+In order to lighten the structure and make some room for the incoming electronics, all the mechanical parts from the piano were removed and every string was cut, snapping with deafening dissonant chords. Get resistant gloves and protective goggles if plan on doing this as they really store a lot of energy.
 
-After that, we jigsawed out rectangles from the front panel of the piano to place the LCD screens and refreshed that old piano with some fancy paint.
+After that, I jigsawed out rectangles from the front panel of the piano to place the LCD screens and refreshed that old piano with some fancy paint.
 
 ![Front panel with added panels](../../assets/projects/arcade7/addpanels.jpg)
 
 ![Window panes added](../../assets/projects/arcade7/addwindowpanes.jpg)
 
-To prevent the screens from any kind of assault from ENSEEIHT *energetic* students, we mounted two half-centimeter polycarbonate bulletproof panes on the screen frames.
+To prevent the screens from any kind of assault from ENSEEIHT *energetic* students, I mounted two half-centimeter polycarbonate bulletproof panes on the screen frames.
 
 ![LCD screens added](../../assets/projects/arcade7/addlcd.jpg)
 
 ![ARCADE 7 sign mounted](../../assets/projects/arcade7/addsign.jpg)
 
-The LCD screens used for this project came from two similar dead laptops. At this time, we did not have the interface boards to use them with HDMI cables, but those were on their way, ordered on [eBay](http://www.ebay.com/itm/M-NT68676-2A-HDMI-DVI-VGA-Audio-LCD-LED-Screen-Controller-Board-Diy-Monitor-Kit-/110977522562) for $40 each.
+The LCD screens used for this project came from two similar dead laptops. At this time, I did not have the interface boards to use them with HDMI cables, but those were on their way, ordered for around $40 a piece.
 
-To give a name to the arcade machine, we cut out these awesome *ARCADE 7* letters according to the *Captain America* font. Why *ARCADE 7*? Because at ENSEEIHT, we put sevens everywhere. In French, the school name can be pronounced *n' set*, and phonetically, *set* means… *7*.
+To give a name to the arcade machine, we cut out these large *ARCADE 7* letters. In French, ENSEEIHT can be pronounced *n' set*. Because *set* sounds like *7*, this number is used all over the school. 
 
 ![Joystick and button pack](../../assets/projects/arcade7/buttonpack.jpg)
 

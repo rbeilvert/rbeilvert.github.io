@@ -36,74 +36,78 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
 >
   <h1>Music Reading Trainer</h1>
   <p>
-    A note appears on the staff. Click the matching note on the wheel below.
-    Includes all 12 chromatic notes, with sharps and flats spelled at random.
-    Switch between treble and bass clef anytime.
+    Random notes appear on the staff. Click the matching notes on the wheel below.
   </p>
 
   <div
     class="not-prose my-5 flex flex-wrap items-center gap-3"
     aria-label="Trainer controls"
   >
-    <span class="text-sm text-stone-600 dark:text-stone-400">Clef:</span>
-    <div
-      class="inline-flex overflow-hidden rounded-md ring-1 ring-stone-300 dark:ring-stone-700"
-      role="group"
-    >
-      <button
-        type="button"
-        data-clef="treble"
-        class="clef-btn is-active px-3 py-1.5 text-sm"
+    <div class="flex items-center gap-2">
+      <span class="text-sm text-stone-600 dark:text-stone-400">Clef:</span>
+      <div
+        class="inline-flex overflow-hidden rounded-md ring-1 ring-stone-300 dark:ring-stone-700"
+        role="group"
       >
-        Treble
-      </button>
-      <button
-        type="button"
-        data-clef="bass"
-        class="clef-btn px-3 py-1.5 text-sm"
-      >
-        Bass
-      </button>
+        <button
+          type="button"
+          data-clef="treble"
+          class="clef-btn is-active px-3 py-1.5 text-sm"
+        >
+          Treble
+        </button>
+        <button
+          type="button"
+          data-clef="bass"
+          class="clef-btn px-3 py-1.5 text-sm"
+        >
+          Bass
+        </button>
+      </div>
     </div>
-    <span class="text-sm text-stone-600 dark:text-stone-400">Notation:</span>
-    <div
-      class="inline-flex overflow-hidden rounded-md ring-1 ring-stone-300 dark:ring-stone-700"
-      role="group"
-    >
-      <button
-        type="button"
-        data-notation="english"
-        class="notation-btn is-active px-3 py-1.5 text-sm"
+    <div class="flex items-center gap-2">
+      <span class="text-sm text-stone-600 dark:text-stone-400">Notation:</span>
+      <div
+        class="inline-flex overflow-hidden rounded-md ring-1 ring-stone-300 dark:ring-stone-700"
+        role="group"
       >
-        English
-      </button>
-      <button
-        type="button"
-        data-notation="latin"
-        class="notation-btn px-3 py-1.5 text-sm"
-      >
-        Latin
-      </button>
+        <button
+          type="button"
+          data-notation="english"
+          class="notation-btn is-active px-3 py-1.5 text-sm"
+        >
+          English
+        </button>
+        <button
+          type="button"
+          data-notation="latin"
+          class="notation-btn px-3 py-1.5 text-sm"
+        >
+          Latin
+        </button>
+      </div>
     </div>
-    <span class="text-sm text-stone-600 dark:text-stone-400">Mode:</span>
-    <div
-      class="inline-flex overflow-hidden rounded-md ring-1 ring-stone-300 dark:ring-stone-700"
-      role="group"
-    >
-      <button
-        type="button"
-        data-mode="naturals"
-        class="mode-btn is-active px-3 py-1.5 text-sm"
+    <div class="flex items-center gap-2">
+      <span class="text-sm text-stone-600 dark:text-stone-400">Mode:</span>
+      <div
+        class="inline-flex overflow-hidden rounded-md ring-1 ring-stone-300 dark:ring-stone-700"
+        role="group"
       >
-        7 notes
-      </button>
-      <button
-        type="button"
-        data-mode="chromatic"
-        class="mode-btn px-3 py-1.5 text-sm"
-      >
-        12 notes
-      </button>
+        <button
+          type="button"
+          data-mode="naturals"
+          class="mode-btn is-active px-3 py-1.5 text-sm"
+        >
+          7 notes
+        </button>
+        <button
+          type="button"
+          data-mode="chromatic"
+          class="mode-btn px-3 py-1.5 text-sm"
+        >
+          12 notes
+        </button>
+      </div>
     </div>
     <div class="ml-auto flex items-center gap-3 text-sm">
       <span>
