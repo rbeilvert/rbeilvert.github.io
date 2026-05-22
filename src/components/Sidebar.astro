@@ -13,7 +13,37 @@ const isActive = (href: string) => {
 };
 ---
 
-<aside class="md:w-48 md:shrink-0">
+<aside
+  id="site-nav"
+  class="site-nav md:w-48 md:shrink-0"
+  data-drawer-open="false"
+  aria-hidden="false"
+>
+  <div
+    class="md:hidden mb-2 flex items-center justify-between border-b border-stone-200 dark:border-stone-800 px-1 pb-2"
+  >
+    <span class="text-sm font-semibold text-stone-700 dark:text-stone-200">
+      Menu
+    </span>
+    <button
+      type="button"
+      data-drawer-close
+      aria-label="Close menu"
+      class="rounded-md border border-stone-200 px-2 py-1 text-stone-700 hover:bg-stone-100 dark:border-stone-700 dark:text-stone-200 dark:hover:bg-stone-800"
+    >
+      <svg
+        class="h-4 w-4"
+        viewBox="0 0 20 20"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        aria-hidden="true"
+      >
+        <path d="M5 5l10 10M15 5L5 15" />
+      </svg>
+    </button>
+  </div>
   <nav aria-label="Main navigation" class="md:sticky md:top-6 space-y-1">
     {
       NAV.map((link, i) => (
@@ -40,7 +70,9 @@ const isActive = (href: string) => {
           >
             {link.label}
           </a>
-          {(i === 0 || i === 1) && <hr class="hidden md:block my-2 border-stone-200 dark:border-stone-800" />}
+          {(i === 0 || i === 1) && (
+            <hr class="hidden md:block my-2 border-stone-200 dark:border-stone-800" />
+          )}
         </>
       ))
     }

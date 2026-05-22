@@ -7,6 +7,19 @@ import { SITE } from "../consts";
 const projects = (
   await getCollection("projects", ({ data }) => !data.draft)
 ).sort((a, b) => a.data.order - b.data.order);
+
+// Tools are a small handful — hardcode rather than introducing a new
+// content collection until there's more than one.
+const tools = [
+  {
+    href: "/tools/music-trainer/",
+    title: "Music Reading Trainer",
+    summary:
+      "Identify musical notes on a staff. Treble or bass clef, naturals or full chromatic, English or Latin notation, with piano playback.",
+    icon: "/img/music/treble.svg",
+    iconAlt: "Treble clef",
+  },
+];
 ---
 
 <Base>
@@ -18,13 +31,42 @@ const projects = (
     time to time. Have a nice day!
   </p>
 
-  <p class="text-sm text-stone-500 dark:text-stone-400">
-    {SITE.tagline}
-  </p>
-
   <hr />
 
-  <div class="not-prose grid grid-cols-1 sm:grid-cols-2 gap-5 mt-6">
+  <h2>Tools</h2>
+
+  <div class="not-prose grid grid-cols-1 sm:grid-cols-2 gap-5 mt-4">
+    {
+      tools.map((t) => (
+        <a
+          href={t.href}
+          class="group block rounded-lg overflow-hidden border border-stone-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-stone-800 dark:bg-stone-900"
+        >
+          <div class="aspect-[16/9] bg-stone-100 dark:bg-stone-800 flex items-center justify-center overflow-hidden p-6">
+            <img
+              src={t.icon}
+              alt={t.iconAlt}
+              class="h-full w-auto max-h-32 object-contain transition-transform duration-300 group-hover:scale-105 dark:invert"
+              loading="eager"
+              decoding="async"
+            />
+          </div>
+          <div class="p-4">
+            <h3 class="text-base font-semibold text-stone-900 dark:text-stone-100">
+              {t.title}
+            </h3>
+            <p class="mt-1 text-sm text-stone-600 dark:text-stone-400">
+              {t.summary}
+            </p>
+          </div>
+        </a>
+      ))
+    }
+  </div>
+
+  <h2>Projects</h2>
+
+  <div class="not-prose grid grid-cols-1 sm:grid-cols-2 gap-5 mt-4">
     {
       projects.map((p, i) => {
         const aboveFold = i < 4;

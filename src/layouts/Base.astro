@@ -50,10 +50,17 @@ const path = Astro.url.pathname;
   </head>
   <body>
     <Header />
+    <div
+      id="drawer-backdrop"
+      class="drawer-backdrop"
+      data-drawer-open="false"
+      aria-hidden="true"
+    >
+    </div>
     <div class="mx-auto max-w-6xl px-4 py-6 md:py-10">
       {
         showSidebar ? (
-          <div class="flex flex-col gap-6 md:flex-row md:gap-10">
+          <div class="md:flex md:gap-10">
             <Sidebar current={path} />
             <article class="prose-article min-w-0 flex-1 rounded-lg bg-white p-5 md:p-8 shadow-sm ring-1 ring-stone-200 dark:bg-stone-900 dark:ring-stone-800">
               <slot />
@@ -67,5 +74,107 @@ const path = Astro.url.pathname;
       }
     </div>
     <Footer />
+
+    <style is:global>
+      /* Mobile drawer: aside positioned fixed off-screen by default,
+         slides in when data-drawer-open="true". Backdrop fades in over the
+         page. At md+ we drop back to the in-flow sidebar layout. */
+      .site-nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 50;
+        width: 78%;
+        max-width: 300px;
+        overflow-y: auto;
+        padding: 1rem;
+        background: #fafaf9;
+        border-right: 1px solid #e7e5e4;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        -webkit-overflow-scrolling: touch;
+      }
+      @media (prefers-color-scheme: dark) {
+        .site-nav {
+          background: #1c1917;
+          border-right-color: #292524;
+        }
+      }
+      .site-nav[data-drawer-open="true"] {
+        transform: translateX(0);
+      }
+      .drawer-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 40;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+      }
+      .drawer-backdrop[data-drawer-open="true"] {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      @media (min-width: 768px) {
+        .site-nav {
+          position: static;
+          width: 12rem;
+          flex-shrink: 0;
+          padding: 0;
+          background: transparent;
+          border-right: none;
+          transform: none;
+          transition: none;
+          overflow: visible;
+        }
+        .drawer-backdrop {
+          display: none;
+        }
+      }
+    </style>
+
+    <script is:inline>
+      (() => {
+        const aside = document.getElementById("site-nav");
+        const backdrop = document.getElementById("drawer-backdrop");
+        if (!aside) return;
+        const toggles = document.querySelectorAll("[data-drawer-toggle]");
+        const closers = document.querySelectorAll("[data-drawer-close]");
+        let open = false;
+
+        function setOpen(next) {
+          open = next;
+          aside.dataset.drawerOpen = String(next);
+          if (backdrop) backdrop.dataset.drawerOpen = String(next);
+          document.body.style.overflow = next ? "hidden" : "";
+          toggles.forEach((t) => t.setAttribute("aria-expanded", String(next)));
+          if (next) {
+            const focusable = aside.querySelector("a, button");
+            if (focusable) focusable.focus();
+          } else {
+            const t = document.querySelector("[data-drawer-toggle]");
+            if (t) t.focus();
+          }
+        }
+
+        toggles.forEach((t) =>
+          t.addEventListener("click", () => setOpen(!open)),
+        );
+        closers.forEach((c) =>
+          c.addEventListener("click", () => setOpen(false)),
+        );
+        if (backdrop) backdrop.addEventListener("click", () => setOpen(false));
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && open) setOpen(false);
+        });
+        // Close drawer when a nav link is followed (mostly a no-op since
+        // navigation reloads the page, but useful for in-page anchors).
+        aside.querySelectorAll("nav a").forEach((a) =>
+          a.addEventListener("click", () => setOpen(false)),
+        );
+      })();
+    </script>
   </body>
 </html>
