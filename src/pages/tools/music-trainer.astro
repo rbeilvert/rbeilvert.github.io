@@ -1,18 +1,20 @@
 ---
 import Base from "../../layouts/Base.astro";
 
+// Dual-spelling labels use "\n" so each spelling sits on its own line inside
+// the circular button — keeps long Latin labels (e.g. "Sol♯ / La♭") readable.
 const PITCH_CLASS_LABELS = [
   "C",
-  "C♯/D♭",
+  "C♯\nD♭",
   "D",
-  "D♯/E♭",
+  "D♯\nE♭",
   "E",
   "F",
-  "F♯/G♭",
+  "F♯\nG♭",
   "G",
-  "G♯/A♭",
+  "G♯\nA♭",
   "A",
-  "A♯/B♭",
+  "A♯\nB♭",
   "B",
 ];
 
@@ -63,18 +65,60 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
         Bass
       </button>
     </div>
-    <button
-      type="button"
-      id="btn-reset"
-      class="rounded-md px-3 py-1.5 text-sm ring-1 ring-stone-300 hover:bg-stone-100 dark:ring-stone-700 dark:hover:bg-stone-800"
+    <span class="text-sm text-stone-600 dark:text-stone-400">Notation:</span>
+    <div
+      class="inline-flex overflow-hidden rounded-md ring-1 ring-stone-300 dark:ring-stone-700"
+      role="group"
     >
-      Reset score
-    </button>
-    <div class="ml-auto text-sm">
-      Score:
-      <span id="score-correct" class="font-semibold">0</span>
-      /
-      <span id="score-total" class="font-semibold">0</span>
+      <button
+        type="button"
+        data-notation="english"
+        class="notation-btn is-active px-3 py-1.5 text-sm"
+      >
+        English
+      </button>
+      <button
+        type="button"
+        data-notation="latin"
+        class="notation-btn px-3 py-1.5 text-sm"
+      >
+        Latin
+      </button>
+    </div>
+    <span class="text-sm text-stone-600 dark:text-stone-400">Mode:</span>
+    <div
+      class="inline-flex overflow-hidden rounded-md ring-1 ring-stone-300 dark:ring-stone-700"
+      role="group"
+    >
+      <button
+        type="button"
+        data-mode="naturals"
+        class="mode-btn is-active px-3 py-1.5 text-sm"
+      >
+        7 notes
+      </button>
+      <button
+        type="button"
+        data-mode="chromatic"
+        class="mode-btn px-3 py-1.5 text-sm"
+      >
+        12 notes
+      </button>
+    </div>
+    <div class="ml-auto flex items-center gap-3 text-sm">
+      <span>
+        Score:
+        <span id="score-correct" class="font-semibold">0</span>
+        /
+        <span id="score-total" class="font-semibold">0</span>
+      </span>
+      <button
+        type="button"
+        id="btn-reset"
+        class="rounded-md px-3 py-1.5 text-sm ring-1 ring-stone-300 hover:bg-stone-100 dark:ring-stone-700 dark:hover:bg-stone-800"
+      >
+        Reset
+      </button>
     </div>
   </div>
 
@@ -110,9 +154,9 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
         <button
           type="button"
           data-pc={b.pc}
-          class="note-btn absolute flex items-center justify-center rounded-full bg-white text-xs font-medium text-stone-800 ring-1 ring-stone-300 transition-colors hover:bg-emerald-50 hover:ring-emerald-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 dark:bg-stone-800 dark:text-stone-100 dark:ring-stone-700 dark:hover:bg-emerald-900/30"
+          class="note-btn absolute flex items-center justify-center whitespace-pre text-center leading-tight rounded-full bg-white text-xs font-medium text-stone-800 ring-1 ring-stone-300 transition-colors hover:bg-emerald-50 hover:ring-emerald-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 dark:bg-stone-800 dark:text-stone-100 dark:ring-stone-700 dark:hover:bg-emerald-900/30"
           style={`width: 54px; height: 54px; left: 50%; top: 50%; transform: translate(calc(-50% + ${b.x}px), calc(-50% + ${b.y}px));`}
-          aria-label={`Note ${b.label}`}
+          aria-label={`Note ${b.label.replace("\n", " or ")}`}
         >
           {b.label}
         </button>
@@ -121,18 +165,26 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
   </div>
 
   <style>
-    .clef-btn {
+    .clef-btn,
+    .notation-btn,
+    .mode-btn {
       background: #fff;
       color: #44403c;
     }
     :global(.dark) .clef-btn,
+    :global(.dark) .notation-btn,
+    :global(.dark) .mode-btn,
     @media (prefers-color-scheme: dark) {
-      .clef-btn {
+      .clef-btn,
+      .notation-btn,
+      .mode-btn {
         background: #1c1917;
         color: #d6d3d1;
       }
     }
-    .clef-btn.is-active {
+    .clef-btn.is-active,
+    .notation-btn.is-active,
+    .mode-btn.is-active {
       background: #059669;
       color: #fff;
     }
@@ -279,10 +331,30 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
 
       const state = {
         clef: "treble",
+        notation: "english",
+        mode: "naturals", // "naturals" (7 notes) or "chromatic" (12 notes)
         pitch: null,
         correct: 0,
         total: 0,
         locked: false,
+      };
+
+      const NATURAL_PCS = [0, 2, 4, 5, 7, 9, 11];
+      const WHEEL_RADIUS = 115;
+
+      const NOTATION_LABELS = {
+        english: [
+          "C", "C♯\nD♭", "D", "D♯\nE♭", "E", "F",
+          "F♯\nG♭", "G", "G♯\nA♭", "A", "A♯\nB♭", "B",
+        ],
+        latin: [
+          "Do", "Do♯\nRé♭", "Ré", "Ré♯\nMi♭", "Mi", "Fa",
+          "Fa♯\nSol♭", "Sol", "Sol♯\nLa♭", "La", "La♯\nSi♭", "Si",
+        ],
+      };
+      const NOTATION_LETTER_MAP = {
+        english: { C: "C", D: "D", E: "E", F: "F", G: "G", A: "A", B: "B" },
+        latin: { C: "Do", D: "Ré", E: "Mi", F: "Fa", G: "Sol", A: "La", B: "Si" },
       };
 
       function midiToSpelling(midi, useFlat) {
@@ -447,13 +519,14 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
       }
 
       function noteName(pitch) {
+        const letter = NOTATION_LETTER_MAP[state.notation][pitch.letter];
         const accChar =
           pitch.accidental === 1
             ? "♯"
             : pitch.accidental === -1
               ? "♭"
               : "";
-        return `${pitch.letter}${accChar}${pitch.octave}`;
+        return `${letter}${accChar}${pitch.octave}`;
       }
 
       function clearButtonStates() {
@@ -471,9 +544,18 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
 
       function newRound() {
         const cfg = CLEF_CONFIG[state.clef];
-        const midi =
-          cfg.midiMin +
-          Math.floor(Math.random() * (cfg.midiMax - cfg.midiMin + 1));
+        let midi;
+        if (state.mode === "naturals") {
+          const pool = [];
+          for (let m = cfg.midiMin; m <= cfg.midiMax; m++) {
+            if (NATURAL_PCS.includes(((m % 12) + 12) % 12)) pool.push(m);
+          }
+          midi = pool[Math.floor(Math.random() * pool.length)];
+        } else {
+          midi =
+            cfg.midiMin +
+            Math.floor(Math.random() * (cfg.midiMax - cfg.midiMin + 1));
+        }
         const useFlat = Math.random() < 0.5;
         state.pitch = midiToSpelling(midi, useFlat);
         state.locked = false;
@@ -489,11 +571,13 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
 
       function handleClick(pc) {
         if (state.locked || !state.pitch) return;
-        playNote(clickedMidi(pc));
         state.locked = true;
         state.total++;
         const isCorrect = state.pitch.pc === pc;
-        if (isCorrect) state.correct++;
+        if (isCorrect) {
+            playNote(clickedMidi(pc));
+            state.correct++;
+        }
         updateScore();
 
         const clicked = document.querySelector(
@@ -534,6 +618,52 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
         newRound();
       }
 
+      function setNotation(notation) {
+        if (!NOTATION_LABELS[notation]) return;
+        state.notation = notation;
+        const labels = NOTATION_LABELS[notation];
+        document.querySelectorAll(".note-btn").forEach((btn) => {
+          const pc = parseInt(btn.dataset.pc, 10);
+          btn.textContent = labels[pc];
+          btn.setAttribute("aria-label", `Note ${labels[pc].replace("\n", " or ")}`);
+        });
+        document.querySelectorAll(".notation-btn").forEach((btn) => {
+          btn.classList.toggle("is-active", btn.dataset.notation === notation);
+        });
+      }
+
+      // Lay out the note buttons according to the current mode. Chromatic mode
+      // places all 12 buttons at 30° increments; naturals mode hides the 5
+      // accidental buttons and spreads the 7 natural buttons evenly.
+      function applyModeLayout() {
+        const naturals = state.mode === "naturals";
+        document.querySelectorAll(".note-btn").forEach((btn) => {
+          const pc = parseInt(btn.dataset.pc, 10);
+          const natIdx = NATURAL_PCS.indexOf(pc);
+          if (naturals && natIdx === -1) {
+            btn.style.display = "none";
+            return;
+          }
+          btn.style.display = "";
+          const angle = naturals
+            ? ((natIdx * 360) / 7 - 90) * (Math.PI / 180)
+            : (pc * 30 - 90) * (Math.PI / 180);
+          const x = Math.cos(angle) * WHEEL_RADIUS;
+          const y = Math.sin(angle) * WHEEL_RADIUS;
+          btn.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+        });
+      }
+
+      function setMode(mode) {
+        if (mode !== "naturals" && mode !== "chromatic") return;
+        state.mode = mode;
+        applyModeLayout();
+        document.querySelectorAll(".mode-btn").forEach((btn) => {
+          btn.classList.toggle("is-active", btn.dataset.mode === mode);
+        });
+        newRound();
+      }
+
       // Wire up
       document.querySelectorAll(".note-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -543,7 +673,16 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
       document.querySelectorAll(".clef-btn").forEach((btn) => {
         btn.addEventListener("click", () => setClef(btn.dataset.clef));
       });
+      document.querySelectorAll(".notation-btn").forEach((btn) => {
+        btn.addEventListener("click", () => setNotation(btn.dataset.notation));
+      });
+      document.querySelectorAll(".mode-btn").forEach((btn) => {
+        btn.addEventListener("click", () => setMode(btn.dataset.mode));
+      });
       document.getElementById("btn-reset").addEventListener("click", reset);
+
+      // Apply initial mode layout (default state.mode is "naturals").
+      applyModeLayout();
 
       // Deep-link via URL hash (#bass or #treble) for direct testing.
       const hashTag = location.hash.replace(/^#/, "").split(/[?&]/)[0];
