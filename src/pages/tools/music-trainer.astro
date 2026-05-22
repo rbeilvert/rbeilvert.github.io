@@ -177,6 +177,11 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
     }
   </style>
 
+  <script
+    is:inline
+    src="https://cdn.jsdelivr.net/npm/tone@15.1.22/build/Tone.js"
+  ></script>
+
   <script is:inline>
     (() => {
       const SVG_NS = "http://www.w3.org/2000/svg";
@@ -227,6 +232,43 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
         ["F", 0], ["G", -1], ["G", 0], ["A", -1], ["A", 0],
         ["B", -1], ["B", 0],
       ];
+
+      // Salamander piano samples loaded via Tone.Sampler. The Sampler does the
+      // pitch-shifting between samples and provides an envelope so we can
+      // release each note after a fixed duration rather than letting it sustain.
+      const sampler = new Tone.Sampler({
+        urls: {
+          "D#2": "Ds2.mp3", "F#2": "Fs2.mp3", "A2": "A2.mp3",
+          "C3": "C3.mp3", "D#3": "Ds3.mp3", "F#3": "Fs3.mp3", "A3": "A3.mp3",
+          "C4": "C4.mp3", "D#4": "Ds4.mp3", "F#4": "Fs4.mp3", "A4": "A4.mp3",
+          "C5": "C5.mp3", "D#5": "Ds5.mp3", "F#5": "Fs5.mp3", "A5": "A5.mp3",
+        },
+        baseUrl: "/audio/piano/",
+        release: 0.4,
+      }).toDestination();
+
+      let toneStarted = false;
+      function ensureTone() {
+        if (toneStarted) return;
+        toneStarted = true;
+        Tone.start().catch(() => { toneStarted = false; });
+      }
+
+      function playNote(midi) {
+        ensureTone();
+        const note = Tone.Frequency(midi, "midi").toNote();
+        sampler.triggerAttackRelease(note, 2);
+      }
+
+      // MIDI of the note the user clicked, placed in the register closest to
+      // the currently displayed pitch (so clicking "B" on a C5 plays B4, not B5).
+      function clickedMidi(pc) {
+        let m = (state.pitch.octave + 1) * 12 + pc;
+        const target = state.pitch.midi;
+        while (m - target > 6) m -= 12;
+        while (target - m > 6) m += 12;
+        return m;
+      }
 
       const TOP_LINE_Y = 70;
       const LINE_SPACING = 12;
@@ -447,6 +489,7 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
 
       function handleClick(pc) {
         if (state.locked || !state.pitch) return;
+        playNote(clickedMidi(pc));
         state.locked = true;
         state.total++;
         const isCorrect = state.pitch.pc === pc;
@@ -465,6 +508,9 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
           setFeedback(`Correct! ${noteName(state.pitch)}`, "ok");
           setTimeout(newRound, 700);
         } else {
+          const buzz = new Audio("/audio/wrong.mp3");
+          buzz.volume = 0.6;
+          buzz.play().catch(() => {});
           clicked.classList.add("is-wrong");
           correctBtn.classList.add("is-correct");
           setFeedback(`Wrong! It was ${noteName(state.pitch)}`, "bad");
