@@ -1,5 +1,5 @@
 export const SITE = {
-  title: "Robin Beilvert",
+  title: "rubec",
   tagline: "Projects gathering blog",
   description: "Electronics, IoT, robotics, art. Projects by Robin Beilvert.",
   author: "Robin Beilvert",
