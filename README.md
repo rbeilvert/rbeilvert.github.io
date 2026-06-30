@@ -1,6 +1,14 @@
-# rbeilvert.github.io
+<h1 align="center">
+<img align="center" src="src/assets/icon.png" alt="rubec" width="100" /><br>
+rubec
+</h1>
 
-Personal site of Robin Beilvert — projects on electronics, IoT, robotics, and art. Built with [Astro](https://astro.build/) + Tailwind. Live at <https://rbeilvert.github.io>.
+<p align="center">
+    My personal site. Projects on electronics, IoT, robotics, and art.<br>
+    Built with Astro + Tailwind, live at <a href="https://rbeilvert.github.io">rbeilvert.github.io</a>.
+</p>
+
+---
 
 ## Run locally
 
