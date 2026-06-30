@@ -5,7 +5,7 @@ rubec
 
 <p align="center">
     My personal site. Projects on electronics, IoT, robotics, and art.<br>
-    Built with Astro + Tailwind, live at <a href="https://rbeilvert.github.io">rbeilvert.github.io</a>.
+    Built with Astro + Tailwind, live at <a href="https://rubec.fr/">rubec.fr</a>.
 </p>
 
 ---
