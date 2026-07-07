@@ -1,9 +1,21 @@
 ---
+import { Image } from "astro:assets";
 import { NAV } from "../consts";
+import githubBlack from "../assets/social/github-black.svg";
+import githubWhite from "../assets/social/github-white.svg";
 
 interface Props {
   current?: string;
 }
+
+const SOCIAL = [
+  {
+    label: "GitHub",
+    href: "https://github.com/rbeilvert",
+    light: githubBlack,
+    dark: githubWhite,
+  },
+];
 
 const { current = "" } = Astro.props;
 
@@ -44,7 +56,8 @@ const isActive = (href: string) => {
       </svg>
     </button>
   </div>
-  <nav aria-label="Main navigation" class="md:sticky md:top-6 space-y-1">
+  <div class="md:sticky md:top-6">
+  <nav aria-label="Main navigation" class="space-y-1">
     {
       NAV.map((link, i) => (
         <>
@@ -77,4 +90,43 @@ const isActive = (href: string) => {
       ))
     }
   </nav>
+  <div>
+    <hr class="hidden md:block my-2 border-stone-200 dark:border-stone-800" />
+    <h3 class="px-3 pt-2 pb-1 text-xs font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400">
+      Social
+    </h3>
+    <div class="flex items-center gap-3 px-3 py-1">
+      {
+        SOCIAL.map((social) => (
+          <a
+            href={social.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={social.label}
+            class="text-stone-700 transition-opacity hover:opacity-70 dark:text-stone-300"
+          >
+            <Image
+              src={social.light}
+              alt={social.label}
+              width={24}
+              height={24}
+              class="h-6 w-6 dark:hidden"
+              loading="eager"
+              decoding="async"
+            />
+            <Image
+              src={social.dark}
+              alt={social.label}
+              width={24}
+              height={24}
+              class="hidden h-6 w-6 dark:block"
+              loading="eager"
+              decoding="async"
+            />
+          </a>
+        ))
+      }
+    </div>
+  </div>
+  </div>
 </aside>
