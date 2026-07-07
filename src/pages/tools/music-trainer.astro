@@ -36,7 +36,7 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
 >
   <h1>Music Reading Trainer</h1>
   <p>
-    Random notes appear on the staff. Click the matching notes on the wheel below.
+    Find the right notes on the wheel below or tap the microphone and sing the notes.
   </p>
 
   <div
@@ -145,6 +145,7 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
   </div>
 
   <div
+    id="wheel"
     class="not-prose relative mx-auto mt-6"
     style="width: 300px; height: 300px;"
   >
@@ -158,14 +159,44 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
         <button
           type="button"
           data-pc={b.pc}
-          class="note-btn absolute flex items-center justify-center whitespace-pre text-center leading-tight rounded-full bg-white text-xs font-medium text-stone-800 ring-1 ring-stone-300 transition-colors hover:bg-emerald-50 hover:ring-emerald-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 dark:bg-stone-800 dark:text-stone-100 dark:ring-stone-700 dark:hover:bg-emerald-900/30"
+          class="note-btn absolute flex items-center justify-center overflow-hidden rounded-full bg-white text-xs font-medium text-stone-800 ring-1 ring-stone-300 transition-colors hover:bg-emerald-50 hover:ring-emerald-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 dark:bg-stone-800 dark:text-stone-100 dark:ring-stone-700 dark:hover:bg-emerald-900/30"
           style={`width: 54px; height: 54px; left: 50%; top: 50%; transform: translate(calc(-50% + ${b.x}px), calc(-50% + ${b.y}px));`}
           aria-label={`Note ${b.label.replace("\n", " or ")}`}
         >
-          {b.label}
+          <span class="note-fill" aria-hidden="true" />
+          <span class="note-label whitespace-pre text-center leading-tight">
+            {b.label}
+          </span>
         </button>
       ))
     }
+
+    <div class="voice-ring" aria-hidden="true" />
+    <div id="voice-dot" class="voice-dot" aria-hidden="true" />
+    <button
+      type="button"
+      id="mic-btn"
+      class="mic-btn absolute flex items-center justify-center rounded-full bg-white text-stone-700 ring-1 ring-stone-300 transition-colors hover:bg-emerald-50 hover:ring-emerald-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 dark:bg-stone-800 dark:text-stone-200 dark:ring-stone-700 dark:hover:bg-emerald-900/30"
+      style="width: 56px; height: 56px; left: 50%; top: 50%; transform: translate(-50%, -50%);"
+      aria-label="Sing a note (voice mode)"
+      aria-pressed="false"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        width="24"
+        height="24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <rect x="9" y="2" width="6" height="12" rx="3" />
+        <path d="M5 10a7 7 0 0 0 14 0" />
+        <line x1="12" y1="19" x2="12" y2="22" />
+      </svg>
+    </button>
   </div>
 
   <style>
@@ -221,6 +252,62 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
       .feedback-neutral {
         color: #a8a29e;
       }
+    }
+    .note-fill {
+      position: absolute;
+      inset: 0;
+      border-radius: 9999px;
+      background: rgba(16, 185, 129, 0.35);
+      transform: scale(0);
+      transform-origin: center;
+      pointer-events: none;
+    }
+    .note-label {
+      position: relative;
+      pointer-events: none;
+    }
+    .mic-btn.is-listening {
+      background: #dc2626 !important;
+      color: #fff !important;
+      animation: mic-pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes mic-pulse {
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.45);
+      }
+      50% {
+        box-shadow: 0 0 0 9px rgba(220, 38, 38, 0);
+      }
+    }
+    .voice-ring {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 148px;
+      height: 148px;
+      transform: translate(-50%, -50%);
+      border-radius: 9999px;
+      border: 1px dashed rgba(120, 113, 108, 0.45);
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+    .voice-dot {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 16px;
+      height: 16px;
+      border-radius: 9999px;
+      background: #059669;
+      box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.22);
+      opacity: 0;
+      transition: opacity 0.12s;
+      pointer-events: none;
+    }
+    .voice-on .voice-ring {
+      opacity: 1;
     }
     #staff text.music-glyph {
       font-family:
@@ -345,6 +432,30 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
 
       const NATURAL_PCS = [0, 2, 4, 5, 7, 9, 11];
       const WHEEL_RADIUS = 115;
+
+      // --- Voice mode (sing-to-guess) -----------------------------------
+      const DOT_RADIUS = 74; // radius of the inner circle the pitch dot rides
+      const HOLD_MS = 1000; // hold a note this long for it to count as a guess
+      const ON_TOLERANCE = 0.2; // how near (in note-steps) the dot must sit to a
+      //                           button for it to count as "on" that note
+      const PITCH_SMOOTH = 0.4; // 0..1 blend toward the newest detected pitch
+      const MIN_FREQ = 65;
+      const MAX_FREQ = 1500;
+      // Continuous pitch-class -> position on the 7-note wheel. Naturals land on
+      // their button index; accidentals sit halfway between their neighbours.
+      const PC_TO_NAT_POS = [0, 0.5, 1, 1.5, 2, 3, 3.5, 4, 4.5, 5, 5.5, 6];
+
+      const voice = {
+        active: false,
+        ctx: null,
+        stream: null,
+        analyser: null,
+        buf: null,
+        raf: 0,
+        smoothMidi: null,
+        heldPc: null,
+        heldStart: 0,
+      };
 
       const NOTATION_LABELS = {
         english: [
@@ -563,6 +674,7 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
         const useFlat = Math.random() < 0.5;
         state.pitch = midiToSpelling(midi, useFlat);
         state.locked = false;
+        resetHold();
         clearButtonStates();
         setFeedback("Click the note name on the wheel.", "neutral");
         renderStaff();
@@ -628,7 +740,7 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
         const labels = NOTATION_LABELS[notation];
         document.querySelectorAll(".note-btn").forEach((btn) => {
           const pc = parseInt(btn.dataset.pc, 10);
-          btn.textContent = labels[pc];
+          btn.querySelector(".note-label").textContent = labels[pc];
           btn.setAttribute("aria-label", `Note ${labels[pc].replace("\n", " or ")}`);
         });
         document.querySelectorAll(".notation-btn").forEach((btn) => {
@@ -668,7 +780,230 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
         newRound();
       }
 
+      // Autocorrelation pitch detector (ACF2+, after Chris Wilson). More
+      // robust for a sung / monophonic voice than peak-picking an FFT, and
+      // dependency-free. Returns the fundamental frequency in Hz, or -1.
+      function autoCorrelate(buf, sampleRate) {
+        const SIZE = buf.length;
+        let rms = 0;
+        for (let i = 0; i < SIZE; i++) rms += buf[i] * buf[i];
+        rms = Math.sqrt(rms / SIZE);
+        if (rms < 0.01) return -1; // too quiet to be a note
+
+        // Trim near-silent head/tail so the autocorrelation locks onto signal.
+        let r1 = 0;
+        let r2 = SIZE - 1;
+        const thres = 0.2;
+        for (let i = 0; i < SIZE / 2; i++)
+          if (Math.abs(buf[i]) < thres) {
+            r1 = i;
+            break;
+          }
+        for (let i = 1; i < SIZE / 2; i++)
+          if (Math.abs(buf[SIZE - i]) < thres) {
+            r2 = SIZE - i;
+            break;
+          }
+
+        const trimmed = buf.subarray(r1, r2);
+        const n = trimmed.length;
+        if (n < 2) return -1;
+        const c = new Float32Array(n);
+        for (let i = 0; i < n; i++)
+          for (let j = 0; j < n - i; j++) c[i] += trimmed[j] * trimmed[j + i];
+
+        // Skip the initial downslope, then take the first strong peak.
+        let d = 0;
+        while (d < n - 1 && c[d] > c[d + 1]) d++;
+        let maxval = -1;
+        let maxpos = -1;
+        for (let i = d; i < n; i++)
+          if (c[i] > maxval) {
+            maxval = c[i];
+            maxpos = i;
+          }
+        if (maxpos <= 0) return -1;
+
+        // Parabolic interpolation around the peak for sub-sample accuracy.
+        let T0 = maxpos;
+        const x1 = c[T0 - 1];
+        const x2 = c[T0];
+        const x3 = c[T0 + 1];
+        const a = (x1 + x3 - 2 * x2) / 2;
+        const b = (x3 - x1) / 2;
+        if (a) T0 -= b / (2 * a);
+
+        return sampleRate / T0;
+      }
+
+      // Map a fractional MIDI pitch to a spot on the current wheel.
+      // Returns { angle (rad), pc (nearest selectable note), dist (steps to it) }.
+      function wheelPosition(midiFloat) {
+        const pcFloat = ((midiFloat % 12) + 12) % 12;
+        if (state.mode === "chromatic") {
+          const nearest = Math.round(pcFloat);
+          const angle = (pcFloat * 30 - 90) * (Math.PI / 180);
+          return {
+            angle,
+            pc: nearest % 12,
+            dist: Math.abs(pcFloat - nearest),
+          };
+        }
+        // Naturals mode: interpolate the pitch class into 7-note ring space so
+        // the dot lands on natural buttons and hovers between them otherwise.
+        const lo = Math.floor(pcFloat) % 12;
+        const frac = pcFloat - Math.floor(pcFloat);
+        const hi = (lo + 1) % 12;
+        const a = PC_TO_NAT_POS[lo];
+        const b = hi === 0 ? 7 : PC_TO_NAT_POS[hi]; // B -> C wraps to 7
+        const pos = a + (b - a) * frac; // 0..7
+        const natIdx = Math.round(pos) % 7;
+        const angle = (pos * (360 / 7) - 90) * (Math.PI / 180);
+        return {
+          angle,
+          pc: NATURAL_PCS[natIdx],
+          dist: Math.abs(pos - Math.round(pos)),
+        };
+      }
+
+      function setFill(pc, progress) {
+        document.querySelectorAll(".note-btn").forEach((btn) => {
+          const fill = btn.querySelector(".note-fill");
+          if (!fill) return;
+          const on = parseInt(btn.dataset.pc, 10) === pc;
+          fill.style.transform = `scale(${on ? progress : 0})`;
+        });
+      }
+
+      function clearFills() {
+        document
+          .querySelectorAll(".note-fill")
+          .forEach((f) => (f.style.transform = "scale(0)"));
+      }
+
+      function resetHold() {
+        voice.heldPc = null;
+        voice.heldStart = 0;
+        clearFills();
+      }
+
+      function moveDot(angle) {
+        const dot = document.getElementById("voice-dot");
+        const x = Math.cos(angle) * DOT_RADIUS;
+        const y = Math.sin(angle) * DOT_RADIUS;
+        dot.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+        dot.style.opacity = "1";
+      }
+
+      function hideDot() {
+        const dot = document.getElementById("voice-dot");
+        if (dot) dot.style.opacity = "0";
+      }
+
+      function voiceTick() {
+        if (!voice.active) return;
+        voice.analyser.getFloatTimeDomainData(voice.buf);
+        const freq = autoCorrelate(voice.buf, voice.ctx.sampleRate);
+        const now = performance.now();
+
+        if (freq >= MIN_FREQ && freq <= MAX_FREQ) {
+          const midi = 69 + 12 * Math.log2(freq / 440);
+          voice.smoothMidi =
+            voice.smoothMidi == null
+              ? midi
+              : voice.smoothMidi + (midi - voice.smoothMidi) * PITCH_SMOOTH;
+
+          const { angle, pc, dist } = wheelPosition(voice.smoothMidi);
+          moveDot(angle);
+
+          if (!state.locked && dist <= ON_TOLERANCE) {
+            if (pc !== voice.heldPc) {
+              voice.heldPc = pc;
+              voice.heldStart = now;
+            }
+            const progress = Math.min(1, (now - voice.heldStart) / HOLD_MS);
+            setFill(pc, progress);
+            if (progress >= 1) {
+              const held = pc;
+              resetHold();
+              handleClick(held); // count it as a guess, right or wrong
+            }
+          } else {
+            resetHold();
+          }
+        } else {
+          voice.smoothMidi = null;
+          hideDot();
+          resetHold();
+        }
+        voice.raf = requestAnimationFrame(voiceTick);
+      }
+
+      async function startVoice() {
+        if (voice.active) return;
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          setFeedback("Microphone not available in this browser.", "bad");
+          return;
+        }
+        let stream;
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            audio: {
+              echoCancellation: false,
+              noiseSuppression: false,
+              autoGainControl: false,
+            },
+          });
+        } catch (e) {
+          setFeedback("Microphone access denied.", "bad");
+          return;
+        }
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        voice.ctx = new Ctx();
+        if (voice.ctx.state === "suspended") voice.ctx.resume().catch(() => {});
+        voice.stream = stream;
+        const src = voice.ctx.createMediaStreamSource(stream);
+        voice.analyser = voice.ctx.createAnalyser();
+        voice.analyser.fftSize = 2048;
+        src.connect(voice.analyser); // analyser only; never routed to output
+        voice.buf = new Float32Array(voice.analyser.fftSize);
+        voice.active = true;
+        voice.smoothMidi = null;
+        resetHold();
+
+        document.getElementById("wheel").classList.add("voice-on");
+        const mic = document.getElementById("mic-btn");
+        mic.classList.add("is-listening");
+        mic.setAttribute("aria-pressed", "true");
+        setFeedback("Sing the note — hold it steady for a second.", "neutral");
+        voice.raf = requestAnimationFrame(voiceTick);
+      }
+
+      function stopVoice() {
+        if (!voice.active) return;
+        voice.active = false;
+        cancelAnimationFrame(voice.raf);
+        if (voice.stream) voice.stream.getTracks().forEach((t) => t.stop());
+        if (voice.ctx) voice.ctx.close().catch(() => {});
+        voice.ctx = null;
+        voice.stream = null;
+        voice.analyser = null;
+        voice.buf = null;
+        voice.smoothMidi = null;
+        resetHold();
+        hideDot();
+
+        document.getElementById("wheel").classList.remove("voice-on");
+        const mic = document.getElementById("mic-btn");
+        mic.classList.remove("is-listening");
+        mic.setAttribute("aria-pressed", "false");
+      }
+
       // Wire up
+      document.getElementById("mic-btn").addEventListener("click", () => {
+        if (voice.active) stopVoice();
+        else startVoice();
+      });
       document.querySelectorAll(".note-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
           handleClick(parseInt(btn.dataset.pc, 10));
