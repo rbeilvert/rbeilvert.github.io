@@ -376,6 +376,10 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
         ["B", -1], ["B", 0],
       ];
 
+      // Each note sustains for NOTE_SECONDS then decays over NOTE_RELEASE.
+      const NOTE_SECONDS = 1;
+      const NOTE_RELEASE = 0.5;
+
       // Salamander piano samples loaded via Tone.Sampler. The Sampler does the
       // pitch-shifting between samples and provides an envelope so we can
       // release each note after a fixed duration rather than letting it sustain.
@@ -387,7 +391,7 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
           "C5": "C5.mp3", "D#5": "Ds5.mp3", "F#5": "Fs5.mp3", "A5": "A5.mp3",
         },
         baseUrl: "/audio/piano/",
-        release: 0.4,
+        release: NOTE_RELEASE,
       }).toDestination();
 
       let toneStarted = false;
@@ -400,7 +404,7 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
       function playNote(midi) {
         ensureTone();
         const note = Tone.Frequency(midi, "midi").toNote();
-        sampler.triggerAttackRelease(note, 2);
+        sampler.triggerAttackRelease(note, NOTE_SECONDS);
       }
 
       // MIDI of the note the user clicked, placed in the register closest to
@@ -692,6 +696,10 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
         const isCorrect = state.pitch.pc === pc;
         if (isCorrect) {
             playNote(clickedMidi(pc));
+            // The note sustains then decays well past the 700ms round lock, so
+            // mute the mic across the whole envelope (+ latency slack) or it
+            // hears the note and re-triggers itself.
+            muteMicFor((NOTE_SECONDS + NOTE_RELEASE) * 1000);
             state.correct++;
         }
         updateScore();
@@ -710,6 +718,7 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
         } else {
           const buzz = new Audio("/audio/wrong.mp3");
           buzz.volume = 0.6;
+          muteMicFor(800);
           buzz.play().catch(() => {});
           clicked.classList.add("is-wrong");
           correctBtn.classList.add("is-correct");
@@ -898,6 +907,26 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
       function hideDot() {
         const dot = document.getElementById("voice-dot");
         if (dot) dot.style.opacity = "0";
+      }
+
+      // While a note (or the buzzer) is sounding we disable the mic input so
+      // the speaker audio isn't heard back and used to re-trigger a selection.
+      // A generation counter keeps overlapping mutes safe: a stale timeout only
+      // re-enables the mic if no newer mute has happened since it was scheduled.
+      let micMuteGen = 0;
+      function setMicEnabled(on) {
+        if (voice.stream)
+          voice.stream.getTracks().forEach((t) => (t.enabled = on));
+      }
+      function muteMicFor(ms) {
+        if (!voice.active) return;
+        const gen = ++micMuteGen;
+        setMicEnabled(false);
+        resetHold();
+        hideDot();
+        setTimeout(() => {
+          if (gen === micMuteGen && voice.active) setMicEnabled(true);
+        }, ms);
       }
 
       function voiceTick() {
