@@ -22,10 +22,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
+      # withastro/action takes a version value, not a version file.
+      - name: Read Node version
+        id: node
+        run: echo "version=$(tr -d '[:space:]' < .nvmrc)" >> "$GITHUB_OUTPUT"
+
       - name: Install, build & upload artifact
         uses: withastro/action@v6
         with:
-          node-version: 22
+          node-version: ${{ steps.node.outputs.version }}
 
   deploy:
     name: Deploy
