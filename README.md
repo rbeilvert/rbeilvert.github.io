@@ -12,7 +12,7 @@ rubec
 
 ## Run locally
 
-Requires Node.js 22.
+Requires Node.js version specified in `.nvmrc`.
 
 ```bash
 npm install
