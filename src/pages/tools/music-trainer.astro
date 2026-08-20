@@ -88,24 +88,24 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
       </div>
     </div>
     <div class="flex items-center gap-2">
-      <span class="text-sm text-stone-600 dark:text-stone-400">Mode:</span>
+      <span class="text-sm text-stone-600 dark:text-stone-400">Scale:</span>
       <div
         class="inline-flex overflow-hidden rounded-md ring-1 ring-stone-300 dark:ring-stone-700"
         role="group"
       >
         <button
           type="button"
-          data-mode="naturals"
-          class="mode-btn is-active px-3 py-1.5 text-sm"
+          data-scale="diatonic"
+          class="scale-btn is-active px-3 py-1.5 text-sm"
         >
-          7 notes
+          Diatonic
         </button>
         <button
           type="button"
-          data-mode="chromatic"
-          class="mode-btn px-3 py-1.5 text-sm"
+          data-scale="chromatic"
+          class="scale-btn px-3 py-1.5 text-sm"
         >
-          12 notes
+          Chromatic
         </button>
       </div>
     </div>
@@ -202,24 +202,24 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
   <style>
     .clef-btn,
     .notation-btn,
-    .mode-btn {
+    .scale-btn {
       background: #fff;
       color: #44403c;
     }
     :global(.dark) .clef-btn,
     :global(.dark) .notation-btn,
-    :global(.dark) .mode-btn,
+    :global(.dark) .scale-btn,
     @media (prefers-color-scheme: dark) {
       .clef-btn,
       .notation-btn,
-      .mode-btn {
+      .scale-btn {
         background: #1c1917;
         color: #d6d3d1;
       }
     }
     .clef-btn.is-active,
     .notation-btn.is-active,
-    .mode-btn.is-active {
+    .scale-btn.is-active {
       background: #059669;
       color: #fff;
     }
@@ -427,7 +427,7 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
       const state = {
         clef: "treble",
         notation: "english",
-        mode: "naturals", // "naturals" (7 notes) or "chromatic" (12 notes)
+        scale: "diatonic", // "diatonic" (7 notes) or "chromatic" (12 notes)
         pitch: null,
         correct: 0,
         total: 0,
@@ -664,7 +664,7 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
       function newRound() {
         const cfg = CLEF_CONFIG[state.clef];
         let midi;
-        if (state.mode === "naturals") {
+        if (state.scale === "diatonic") {
           const pool = [];
           for (let m = cfg.midiMin; m <= cfg.midiMax; m++) {
             if (NATURAL_PCS.includes(((m % 12) + 12) % 12)) pool.push(m);
@@ -757,20 +757,20 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
         });
       }
 
-      // Lay out the note buttons according to the current mode. Chromatic mode
-      // places all 12 buttons at 30° increments; naturals mode hides the 5
-      // accidental buttons and spreads the 7 natural buttons evenly.
-      function applyModeLayout() {
-        const naturals = state.mode === "naturals";
+      // Lay out the note buttons according to the current scale. The chromatic
+      // scale places all 12 buttons at 30° increments; the diatonic scale hides
+      // the 5 accidental buttons and spreads the 7 natural buttons evenly.
+      function applyScaleLayout() {
+        const diatonic = state.scale === "diatonic";
         document.querySelectorAll(".note-btn").forEach((btn) => {
           const pc = parseInt(btn.dataset.pc, 10);
           const natIdx = NATURAL_PCS.indexOf(pc);
-          if (naturals && natIdx === -1) {
+          if (diatonic && natIdx === -1) {
             btn.style.display = "none";
             return;
           }
           btn.style.display = "";
-          const angle = naturals
+          const angle = diatonic
             ? ((natIdx * 360) / 7 - 90) * (Math.PI / 180)
             : (pc * 30 - 90) * (Math.PI / 180);
           const x = Math.cos(angle) * WHEEL_RADIUS;
@@ -779,12 +779,12 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
         });
       }
 
-      function setMode(mode) {
-        if (mode !== "naturals" && mode !== "chromatic") return;
-        state.mode = mode;
-        applyModeLayout();
-        document.querySelectorAll(".mode-btn").forEach((btn) => {
-          btn.classList.toggle("is-active", btn.dataset.mode === mode);
+      function setScale(scale) {
+        if (scale !== "diatonic" && scale !== "chromatic") return;
+        state.scale = scale;
+        applyScaleLayout();
+        document.querySelectorAll(".scale-btn").forEach((btn) => {
+          btn.classList.toggle("is-active", btn.dataset.scale === scale);
         });
         newRound();
       }
@@ -849,7 +849,7 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
       // Returns { angle (rad), pc (nearest selectable note), dist (steps to it) }.
       function wheelPosition(midiFloat) {
         const pcFloat = ((midiFloat % 12) + 12) % 12;
-        if (state.mode === "chromatic") {
+        if (state.scale === "chromatic") {
           const nearest = Math.round(pcFloat);
           const angle = (pcFloat * 30 - 90) * (Math.PI / 180);
           return {
@@ -858,7 +858,7 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
             dist: Math.abs(pcFloat - nearest),
           };
         }
-        // Naturals mode: interpolate the pitch class into 7-note ring space so
+        // Diatonic scale: interpolate the pitch class into 7-note ring space so
         // the dot lands on natural buttons and hovers between them otherwise.
         const lo = Math.floor(pcFloat) % 12;
         const frac = pcFloat - Math.floor(pcFloat);
@@ -1044,13 +1044,13 @@ const buttons = PITCH_CLASS_LABELS.map((label, i) => {
       document.querySelectorAll(".notation-btn").forEach((btn) => {
         btn.addEventListener("click", () => setNotation(btn.dataset.notation));
       });
-      document.querySelectorAll(".mode-btn").forEach((btn) => {
-        btn.addEventListener("click", () => setMode(btn.dataset.mode));
+      document.querySelectorAll(".scale-btn").forEach((btn) => {
+        btn.addEventListener("click", () => setScale(btn.dataset.scale));
       });
       document.getElementById("btn-reset").addEventListener("click", reset);
 
-      // Apply initial mode layout (default state.mode is "naturals").
-      applyModeLayout();
+      // Apply initial scale layout (default state.scale is "diatonic").
+      applyScaleLayout();
 
       // Deep-link via URL hash (#bass or #treble) for direct testing.
       const hashTag = location.hash.replace(/^#/, "").split(/[?&]/)[0];
