@@ -34,17 +34,21 @@ jobs:
 
       - name: Serve build output & check it responds
         run: |
-          setsid npm run preview -- --host 127.0.0.1 --port 4321 > preview.log 2>&1 &
-          server=$!
-          trap 'kill -- -$server 2>/dev/null' EXIT
+          npm run preview -- --background --host 127.0.0.1 --port 4321 > preview.log 2>&1 || {
+            echo "::error::preview server failed to start"
+            cat preview.log
+            exit 1
+          }
+          trap 'npm run preview -- stop > /dev/null 2>&1' EXIT
 
           check() {
-            curl --fail --silent --show-error --max-time 30 --retry 15 --retry-delay 1 \
-              --retry-connrefused -o /dev/null "http://127.0.0.1:4321$1"
+            curl --fail --silent --show-error --max-time 30 \
+              -o /dev/null "http://127.0.0.1:4321$1"
           }
 
-          check / && check /sitemap-index.xml && kill -0 $server || {
-            echo "::error::preview server failed"
+          check / && check /sitemap-index.xml || {
+            echo "::error::preview server did not respond"
             cat preview.log
+            npm run preview -- logs 2>&1 | tail -50
             exit 1
           }
