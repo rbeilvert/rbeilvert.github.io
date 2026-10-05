@@ -11,6 +11,10 @@ updates:
     commit-message:
       prefix: "deps"
     groups:
+      # Astro packages pin each other via peer deps, so bump them together,
+      # majors included (0.x "minor" bumps like markdown-satteri are breaking too)
+      astro:
+        patterns: ["astro", "@astrojs/*"]
       npm-dependencies:
         patterns: ["*"]
         update-types: ["minor", "patch"]
